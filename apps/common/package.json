@@ -1,0 +1,18 @@
+{
+  "name": "@perfume-platform/common",
+  "version": "0.0.1",
+  "description": "Common types and utilities for perfume platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.lib.json",
+    "build:watch": "tsc --watch"
+  },
+  "dependencies": {
+    "class-validator": "^0.14.0",
+    "class-transformer": "^0.5.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

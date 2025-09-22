@@ -1,0 +1,410 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: perfume-postgres
+    environment:
+      POSTGRES_DB: perfume_platform
+      POSTGRES_USER: perfume_user
+      POSTGRES_PASSWORD: perfume_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - perfume-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U perfume_user -d perfume_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222" # Client connections
+
+  redis:
+    image: redis:7-alpine
+    container_name: perfume-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - perfume-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: perfume-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - perfume-network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: perfume-kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - perfume-network
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+
+  api-client:
+    build:
+      context: .
+      dockerfile: Dockerfile.minimal
+    container_name: perfume-api-client
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      NEST_APP: api-client
+      KAFKA_BROKERS: kafka:29092
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./apps/api-client:/app/apps/api-client
+      - ./apps/common:/app/apps/common
+      - ./nest-cli.json:/app/nest-cli.json
+      - ./tsconfig*.json:/app/
+      - /app/node_modules
+    command: ["npm", "run", "start:dev:service", "api-client"]
+    networks:
+      - perfume-network
+
+  api-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.minimal
+    container_name: perfume-api-admin
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3002
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BROKERS: kafka:29092
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./apps/api-admin:/app/apps/api-admin
+      - ./apps/common:/app/apps/common
+      - ./nest-cli.json:/app/nest-cli.json
+      - ./tsconfig*.json:/app/
+      - /app/node_modules
+    command: ["npm", "run", "start:dev:service", "api-admin"]
+    networks:
+      - perfume-network
+
+  # microservices
+  micro-users:
+    build:
+      context: .
+      dockerfile: Dockerfile.minimal
+    container_name: perfume-micro-users
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3003
+      NEST_APP: micro-users
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: perfume_platform
+      DATABASE_USER: perfume_user
+      DATABASE_PASSWORD: perfume_password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BROKERS: kafka:29092
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./apps/micro-users:/app/apps/micro-users
+      - ./apps/common:/app/apps/common
+      - ./nest-cli.json:/app/nest-cli.json
+      - ./tsconfig*.json:/app/
+      - /app/node_modules
+    networks:
+      - perfume-network
+    command: ["npm", "run", "start:dev:service", "micro-users"]
+
+  micro-products:
+    build:
+      context: .
+      dockerfile: Dockerfile.minimal
+    container_name: perfume-micro-products
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3004
+      NEST_APP: micro-products
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: perfume_platform
+      DATABASE_USER: perfume_user
+      DATABASE_PASSWORD: perfume_password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BROKERS: kafka:29092
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./apps/micro-products:/app/apps/micro-products
+      - ./apps/common:/app/apps/common
+      - ./nest-cli.json:/app/nest-cli.json
+      - ./tsconfig*.json:/app/
+      - /app/node_modules
+    networks:
+      - perfume-network
+    command: ["npm", "run", "start:dev:service", "micro-products"]
+
+  micro-orders:
+    build:
+      context: .
+      dockerfile: Dockerfile.minimal
+    container_name: perfume-micro-orders
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3005
+      NEST_APP: micro-orders
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: perfume_platform
+      DATABASE_USER: perfume_user
+      DATABASE_PASSWORD: perfume_password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BROKERS: kafka:29092
+    ports:
+      - "3005:3005"
+    volumes:
+      - ./apps/micro-orders:/app/apps/micro-orders
+      - ./apps/common:/app/apps/common
+      - ./nest-cli.json:/app/nest-cli.json
+      - ./tsconfig*.json:/app/
+      - /app/node_modules
+    networks:
+      - perfume-network
+    command: ["npm", "run", "start:dev:service", "micro-orders"]
+
+  micro-bank:
+    build:
+      context: .
+      dockerfile: Dockerfile.minimal
+    container_name: perfume-micro-bank
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3006
+      NEST_APP: micro-bank
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: perfume_platform
+      DATABASE_USER: perfume_user
+      DATABASE_PASSWORD: perfume_password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BROKERS: kafka:29092
+    ports:
+      - "3006:3006"
+    volumes:
+      - ./apps/micro-bank:/app/apps/micro-bank
+      - ./apps/common:/app/apps/common
+      - ./nest-cli.json:/app/nest-cli.json
+      - ./tsconfig*.json:/app/
+      - /app/node_modules
+    networks:
+      - perfume-network
+    command: ["npm", "run", "start:dev:service", "micro-bank"]
+
+  micro-buyers:
+    build:
+      context: .
+      dockerfile: Dockerfile.minimal
+    container_name: perfume-micro-buyers
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3007
+      NEST_APP: micro-buyers
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: perfume_platform
+      DATABASE_USER: perfume_user
+      DATABASE_PASSWORD: perfume_password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BROKERS: kafka:29092
+    ports:
+      - "3007:3007"
+    volumes:
+      - ./apps/micro-buyers:/app/apps/micro-buyers
+      - ./apps/common:/app/apps/common
+      - ./nest-cli.json:/app/nest-cli.json
+      - ./tsconfig*.json:/app/
+      - /app/node_modules
+    networks:
+      - perfume-network
+    command: ["npm", "run", "start:dev:service", "micro-buyers"]
+
+  micro-emails:
+    build:
+      context: .
+      dockerfile: Dockerfile.minimal
+    container_name: perfume-micro-emails
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3008
+      NEST_APP: micro-emails
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: perfume_platform
+      DATABASE_USER: perfume_user
+      DATABASE_PASSWORD: perfume_password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BROKERS: kafka:29092
+    ports:
+      - "3008:3008"
+    volumes:
+      - ./apps/micro-emails:/app/apps/micro-emails
+      - ./apps/common:/app/apps/common
+      - ./nest-cli.json:/app/nest-cli.json
+      - ./tsconfig*.json:/app/
+      - /app/node_modules
+    networks:
+      - perfume-network
+    command: ["npm", "run", "start:dev:service", "micro-emails"]
+
+  micro-storage:
+    build:
+      context: .
+      dockerfile: Dockerfile.minimal
+    container_name: perfume-micro-storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3009
+      NEST_APP: micro-storage
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: perfume_platform
+      DATABASE_USER: perfume_user
+      DATABASE_PASSWORD: perfume_password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BROKERS: kafka:29092
+    ports:
+      - "3009:3009"
+    volumes:
+      - ./apps/micro-storage:/app/apps/micro-storage
+      - ./apps/common:/app/apps/common
+      - ./nest-cli.json:/app/nest-cli.json
+      - ./tsconfig*.json:/app/
+      - /app/node_modules
+    networks:
+      - perfume-network
+    command: ["npm", "run", "start:dev:service", "micro-storage"]
+
+volumes:
+  postgres_data:
+  redis_data:
+  kafka_data:
+
+networks:
+  perfume-network:
+    driver: bridge
