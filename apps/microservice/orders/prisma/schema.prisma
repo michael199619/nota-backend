@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "darwin", "darwin-arm64", "linux-arm64-openssl-1.1.x"]
+  output        = "../../../../node_modules/prisma_types/orders"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ORDERS_DB_URL")
+}
+
+enum TypeOrder {
+  PANTING
+  PAID
+  REJECT
+  DELIVERED
+}
+
+model Order {
+  id            String  @id @db.Uuid
+  buyerId       String  @db.Uuid
+  transactionId String  @db.Uuid
+  receiptId     String? @db.Uuid
+
+  items    OrderItem[]
+  comments Comment[]
+}
+
+model OrderItem {
+  id        String  @id @db.Uuid
+  orderId   String  @db.Uuid
+  price     Decimal @db.Decimal
+  count     Int
+  pruductId String  @db.Uuid
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+}
+
+model Comment {
+  id        String    @id @db.Uuid
+  orderId   String    @db.Uuid
+  value     String
+  typeOrder TypeOrder @default(PANTING)
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+}
+
+model Transaction {
+  id        String  @id @db.Uuid
+  orderId   String  @unique @db.Uuid
+  comment   String?
+  buyerId   String  @db.Uuid
+  paymentId String
+  status    String? // из апи кассы
+}

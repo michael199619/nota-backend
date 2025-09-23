@@ -9,5 +9,36 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("CLIENTS_DB_URL")
+  url      = env("USERS_DB_URL")
+}
+
+model Role {
+  id   String  @id @db.Uuid
+  name String?
+
+  users User[]
+}
+
+model Salary {
+  userId                  String @id @db.Uuid
+  mounth                  Int?
+  myPerfumeSaleInProcent  Int?
+  allPerfumeSaleInProcent Int?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id       String  @id @db.Uuid
+  login    String
+  phone    Int
+  email    String
+  avatarId String? @db.Uuid
+  password String
+  name     String
+
+  roleId String @db.Uuid
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  salary Salary?
 }

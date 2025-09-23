@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { prismaServiceFabric } from '@perfume-platform/common';
-import { PrismaClient } from 'prisma_types/users';
-export * from 'prisma_types/users';
+import { PrismaClient } from 'prisma_types/orders';
+export * from 'prisma_types/orders';
 
 @Injectable()
 export class PrismaService extends prismaServiceFabric(

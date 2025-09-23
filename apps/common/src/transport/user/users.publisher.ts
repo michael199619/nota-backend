@@ -6,12 +6,12 @@ import { IUserController } from "./user.interface";
 
 export class UsersPublisher implements IUserController {
     constructor(
-        public kafkaService: ClientKafka,
-        public natsService: ClientNats
+        private kafkaService: ClientKafka,
+        private natsService: ClientNats
     ) {
     }
 
-    async onApplicationBootstrap() {
+    private async onApplicationBootstrap() {
         userTopics.forEach(pattern => this.kafkaService.subscribeToResponseOf(pattern))
         await this.kafkaService.connect()
     }

@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Database
-  postgres:
+  # Database
+  users_db:
     image: postgres:15-alpine
     container_name: perfume-postgres
     environment:
@@ -11,16 +11,15 @@ services:
       POSTGRES_PASSWORD: perfume_password
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - perfume-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U perfume_user -d perfume_platform"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  orders_db:
+    image: postgres:15-alpine
+    container_name: orders-postgres
+    environment:
+      POSTGRES_DB: perfume_platform
+      POSTGRES_USER: perfume_order
+      POSTGRES_PASSWORD: perfume_password
+    ports:
+      - "5433:5432"
 
   nats:
     image: nats:latest
@@ -94,8 +93,6 @@ services:
       dockerfile: Dockerfile.minimal
     container_name: perfume-api-client
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
       kafka:
@@ -123,8 +120,6 @@ services:
       dockerfile: Dockerfile.minimal
     container_name: perfume-api-admin
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
       kafka:
@@ -154,8 +149,6 @@ services:
       dockerfile: Dockerfile.minimal
     container_name: perfume-micro-users
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
       kafka:
@@ -190,8 +183,6 @@ services:
       dockerfile: Dockerfile.minimal
     container_name: perfume-micro-products
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
       kafka:
@@ -226,8 +217,6 @@ services:
       dockerfile: Dockerfile.minimal
     container_name: perfume-micro-orders
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
       kafka:
@@ -262,8 +251,6 @@ services:
       dockerfile: Dockerfile.minimal
     container_name: perfume-micro-bank
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
       kafka:
@@ -298,8 +285,6 @@ services:
       dockerfile: Dockerfile.minimal
     container_name: perfume-micro-buyers
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
       kafka:
@@ -334,8 +319,6 @@ services:
       dockerfile: Dockerfile.minimal
     container_name: perfume-micro-emails
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
       kafka:
@@ -370,8 +353,6 @@ services:
       dockerfile: Dockerfile.minimal
     container_name: perfume-micro-storage
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
       kafka:

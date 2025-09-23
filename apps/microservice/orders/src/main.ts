@@ -4,12 +4,11 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { TRASPORT_ORDER_GROUP } from '@perfume-platform/common';
 import { AppModule } from './app.module';
 import { SERVICE_ID } from './constants';
-import { appConfig, kafkaConfig, natsConfig } from './modules/config/config';
+import { kafkaConfig, natsConfig } from './modules/config/config';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
-    const configApp = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);
     const configKafka = app.get<ConfigType<typeof kafkaConfig>>(kafkaConfig.KEY);
     const configNats = app.get<ConfigType<typeof natsConfig>>(natsConfig.KEY);
 

@@ -3,11 +3,15 @@ import { Repository } from "../base.repository";
 import { PrismaService } from "../prisma.service";
 
 @Injectable()
-export class ClientsRepository extends Repository {
+export class BuyersRepository extends Repository {
     constructor(
         prisma: PrismaService,
     ) {
         super(prisma);
+    }
+
+    getProfile() {
+
     }
 
 } 

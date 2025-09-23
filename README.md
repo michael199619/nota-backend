@@ -1,4 +1,6 @@
-#Gallery-nota
+![Image alt](https://github.com/michael199619/nota-frontend/raw/main/assets/main.png)
+
+# Gallery-nota
 
 Микросервисная архитектура для платформы парфюмерии
 
@@ -10,14 +12,14 @@ apps/
    ├── client/      # :3000 - API для покупателей
    ├── admin/       # :3001 - API для админов  
 ├── microservices
-   ├── micro-users/     # :3002 - Управление пользователями
-   ├── micro-products/  # :3003 - Каталог парфюмерии
-   ├── micro-orders/    # :3004 - Заказы
-   ├── micro-bank/      # :3005 - Платежи
-   ├── micro-buyers/    # :3006 - Покупатели
-   ├── micro-emails/    # :3007 - Уведомления
-   ├── micro-storage/   # :3008 - Файлы
-└── common/                     - Общее
+   ├── micro-users/     - Управление пользователями
+   ├── micro-products/  - Каталог парфюмерии
+   ├── micro-orders/    - Заказы
+   ├── micro-bank/      - Платежи
+   ├── micro-buyers/    - Покупатели
+   ├── micro-emails/    - Уведомления
+   ├── micro-storage/   - Файлы
+└── common/             - Общее
 ```
 
 # Разработка (жесткая связь)
