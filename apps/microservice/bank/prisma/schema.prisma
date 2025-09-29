@@ -11,3 +11,67 @@ datasource db {
   provider = "postgresql"
   url      = env("BANK_DB_URL")
 }
+
+enum PaymentStatus {
+  APPROVE
+  PARTIALLY
+  REJECT
+  PENDING
+}
+
+enum PaymentType {
+  BUY
+  TRANSFER
+}
+
+enum RecipientType {
+  PROVIDER
+  COMPONENT
+  USER
+}
+
+enum RecipientStatus {
+  APPROV
+  REJECT
+  PENDING
+}
+
+enum ReceiptType {
+  INCOME
+  EXPENSE
+}
+
+enum ReceiptEntityType {
+  USER
+  COMPONENT
+  ORDER
+  PROVIDER
+}
+
+model Payment {
+  id        String        @id @db.Uuid
+  name      String        @db.VarChar(255)
+  type      PaymentType   @default(BUY)
+  receiptId String?       @db.Uuid
+  status    PaymentStatus @default(PENDING)
+  createdAt DateTime
+}
+
+model Recipient {
+  id        String          @id @db.Uuid
+  type      RecipientType   @default(PROVIDER)
+  price     Decimal
+  status    RecipientStatus @default(PENDING)
+  paymentId String          @db.Uuid
+  receiptId String?         @db.Uuid
+}
+
+model Receipt {
+  id         String            @id @db.Uuid
+  entities   String[]          @db.Uuid
+  type       ReceiptType
+  entityType ReceiptEntityType @default(PROVIDER)
+  price      Decimal
+  createdAt  DateTime
+  documentId String            @db.Uuid
+}

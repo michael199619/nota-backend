@@ -21,6 +21,10 @@ apps/
    ├── micro-storage/   - Файлы
 └── common/             - Общее
 ```
+## База
+Базы имеют только микросервисы
+![Image alt](https://github.com/michael199619/nota-backend/raw/main/assets/database.svg)
+https://www.drawdb.app/editor?shareId=d6b6de62da3bc579e4266f794cc99804
 
 # Разработка (жесткая связь)
 Точки входа являются apps/api/* и в апи не должно быть логики, вся логика в микросах /apps/microservises/* 

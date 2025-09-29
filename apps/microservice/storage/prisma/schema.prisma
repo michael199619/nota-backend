@@ -11,3 +11,16 @@ datasource db {
   provider = "postgresql"
   url      = env("STORAGE_DB_URL")
 }
+
+enum StorageType {
+  TRACK
+  IMAGE
+  DOCUMENT
+}
+
+model Storage {
+  id   String      @id @db.Uuid
+  name String      @db.VarChar(255)
+  url  String      @db.VarChar(255)
+  type StorageType
+}

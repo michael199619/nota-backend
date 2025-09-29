@@ -60,7 +60,7 @@ function run(command: string, service: string): void {
         process.exit(1);
     }
 
-    // Перед сборкой/запуском любого сервиса собираем общую библиотеку (через tsc в apps/common)
+    // Перед сборкой/запуском любого сервиса собираем общую библиотеку
     try {
         console.log('npm --prefix apps/common run build');
         execSync('npm --prefix apps/common run build', { stdio: 'inherit' });
@@ -101,7 +101,7 @@ function startAll(options: {
     console.log(`Запуск:`);
     services.forEach((s, i) => console.log(`  ${i + 1}. ${s}`));
 
-    // Перед массовым запуском собираем общую библиотеку (через tsc в apps/common)
+    // Перед массовым запуском собираем общую библиотеку
     try {
         console.log('npm --prefix apps/common run build');
         execSync('npm --prefix apps/common run build', { stdio: 'inherit' });

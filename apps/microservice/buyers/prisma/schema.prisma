@@ -11,3 +11,37 @@ datasource db {
   provider = "postgresql"
   url      = env("BUYERS_DB_URL")
 }
+
+enum BuyerAuthType {
+  INST
+  TELEGRAM
+  SITE
+}
+
+model Buyer {
+  id       String        @id @db.Uuid
+  login    String        @db.VarChar(255)
+  phone    Int
+  email    String        @db.VarChar(255)
+  typeAuth BuyerAuthType @default(SITE)
+  password String        @db.Char(1)
+
+  info BuyerInfo?
+}
+
+model BuyerInfo {
+  buyerId String  @id @db.Uuid
+  name    String? @db.VarChar(255)
+
+  buyer   Buyer     @relation(fields: [buyerId], references: [id])
+  Address Address[]
+}
+
+model Address {
+  id      String  @id @db.Uuid
+  buyerId String  @db.Uuid
+  address String  @db.Text
+  active  Boolean @default(true)
+
+  buyer BuyerInfo @relation(fields: [buyerId], references: [buyerId])
+}

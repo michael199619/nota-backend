@@ -11,3 +11,127 @@ datasource db {
   provider = "postgresql"
   url      = env("PRODUCTS_DB_URL")
 }
+
+enum MusicType {
+  TRACK
+  ALBUM
+}
+
+enum ComponentLvl {
+  TOP
+  MIDDLE
+  BOTOM
+  ARRANGEMENT
+}
+
+enum Provider {
+  DROP
+  LITTER
+}
+
+enum ComponentType {
+  NOTE_ALCOHOL
+  NOTE_ETHEREAL
+  ALCOHOL
+  ETHEREAL
+}
+
+enum Sex {
+  MAN
+  WOMEN
+  UNISEX
+}
+
+enum ProductEntity {
+  PERFUME
+}
+
+model Track {
+  id           String  @id @db.Uuid
+  shortTrackId String  @db.Uuid
+  fullTrackId  String? @db.Uuid
+
+  musics Music[]
+}
+
+model Music {
+  id      String    @id @db.Uuid
+  trackId String?   @db.Uuid
+  name    String    @db.VarChar(255)
+  type    MusicType
+
+  track   Track?    @relation(fields: [trackId], references: [id])
+  product Product[]
+}
+
+model Collection {
+  id          String @id @db.Uuid
+  name        String @db.VarChar(255)
+  description String @db.Text
+
+  items CollectionItem[]
+}
+
+model CollectionItem {
+  id           String   @id @db.Uuid
+  productId    String?  @db.Uuid
+  description  String   @db.Text
+  collectionId String   @db.Uuid
+  index        Int
+  imageIds     String[] @db.Uuid
+
+  collection Collection @relation(fields: [collectionId], references: [id])
+  product    Product?   @relation(fields: [productId], references: [id])
+}
+
+model Component {
+  id          String        @id @db.Uuid
+  name        String        @db.VarChar(255)
+  description String?       @db.Text
+  volume      Decimal
+  provider    Provider
+  type        ComponentType
+  receiptId   String?       @db.Uuid
+  isFinish    Boolean?
+}
+
+model ComponentItem {
+  id          String       @id @db.Uuid
+  componentId String       @db.Uuid
+  lvl         ComponentLvl
+  value       Int
+  typeVolume  Provider
+  index       Int
+}
+
+model Perfume {
+  id                String        @id @db.Uuid
+  userId            String        @db.Uuid
+  sex               Sex           @default(UNISEX)
+  authorDescription String        @db.Text
+  ProductItem       ProductItem[]
+}
+
+model Product {
+  id           String   @id @db.Uuid
+  isCollection Boolean?
+  musicId      String   @db.Uuid
+  currentPrice Decimal
+  name         String   @db.VarChar(255)
+  description  String   @db.VarChar(255)
+
+  music          Music            @relation(fields: [musicId], references: [id])
+  items          ProductItem[]
+  CollectionItem CollectionItem[]
+}
+
+model ProductItem {
+  id        String        @id @db.Uuid
+  entity    ProductEntity @default(PERFUME)
+  perfumeId String?       @db.Uuid
+  count     Decimal
+  productId String        @db.Uuid
+
+  product Product  @relation(fields: [productId], references: [id])
+  perfume Perfume? @relation(fields: [perfumeId], references: [id])
+}

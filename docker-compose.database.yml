@@ -1,0 +1,136 @@
+version: "3.9"
+
+services:
+  users-db:
+    image: postgres:15-alpine
+    container_name: perfume_users_db
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_DB: ${USERS_DB_NAME:-users}
+      POSTGRES_USER: ${USERS_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${USERS_DB_PASSWORD:-postgres}
+    ports:
+      - "${USERS_DB_PORT:-5433}:5432"
+    volumes:
+      - users_db_data:/var/lib/postgresql/data
+    networks:
+      - perfume_net
+
+  orders-db:
+    image: postgres:15-alpine
+    container_name: perfume_orders_db
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_DB: ${ORDERS_DB_NAME:-orders}
+      POSTGRES_USER: ${ORDERS_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${ORDERS_DB_PASSWORD:-postgres}
+    ports:
+      - "${ORDERS_DB_PORT:-5434}:5432"
+    volumes:
+      - orders_db_data:/var/lib/postgresql/data
+    networks:
+      - perfume_net
+
+  products-db:
+    image: postgres:15-alpine
+    container_name: perfume_products_db
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_DB: ${PRODUCTS_DB_NAME:-products}
+      POSTGRES_USER: ${PRODUCTS_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${PRODUCTS_DB_PASSWORD:-postgres}
+    ports:
+      - "${PRODUCTS_DB_PORT:-5435}:5432"
+    volumes:
+      - products_db_data:/var/lib/postgresql/data
+    networks:
+      - perfume_net
+
+  storage-db:
+    image: postgres:15-alpine
+    container_name: perfume_storage_db
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_DB: ${STORAGE_DB_NAME:-storage}
+      POSTGRES_USER: ${STORAGE_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${STORAGE_DB_PASSWORD:-postgres}
+    ports:
+      - "${STORAGE_DB_PORT:-5436}:5432"
+    volumes:
+      - storage_db_data:/var/lib/postgresql/data
+    networks:
+      - perfume_net
+
+  emails-db:
+    image: postgres:15-alpine
+    container_name: perfume_emails_db
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_DB: ${EMAILS_DB_NAME:-emails}
+      POSTGRES_USER: ${EMAILS_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${EMAILS_DB_PASSWORD:-postgres}
+    ports:
+      - "${EMAILS_DB_PORT:-5437}:5432"
+    volumes:
+      - emails_db_data:/var/lib/postgresql/data
+    networks:
+      - perfume_net
+
+  bank-db:
+    image: postgres:15-alpine
+    container_name: perfume_bank_db
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_DB: ${BANK_DB_NAME:-bank}
+      POSTGRES_USER: ${BANK_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${BANK_DB_PASSWORD:-postgres}
+    ports:
+      - "${BANK_DB_PORT:-5438}:5432"
+    volumes:
+      - bank_db_data:/var/lib/postgresql/data
+    networks:
+      - perfume_net
+
+  buyers-db:
+    image: postgres:15-alpine
+    container_name: perfume_buyers_db
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_DB: ${BUYERS_DB_NAME:-buyers}
+      POSTGRES_USER: ${BUYERS_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${BUYERS_DB_PASSWORD:-postgres}
+    ports:
+      - "${BUYERS_DB_PORT:-5439}:5432"
+    volumes:
+      - buyers_db_data:/var/lib/postgresql/data
+    networks:
+      - perfume_net
+
+networks:
+  perfume_net:
+    driver: bridge
+
+volumes:
+  users_db_data:
+  orders_db_data:
+  products_db_data:
+  storage_db_data:
+  emails_db_data:
+  bank_db_data:
+  buyers_db_data:
+
+
