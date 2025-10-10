@@ -12,6 +12,17 @@ datasource db {
   url      = env("USERS_DB_URL")
 }
 
+enum SalaryType {
+  SALE_OWN_PRODUCT // зарплата за продажу своего продукта
+  SALE_ALL_PRODUCT // зарплата за продажу всей продукции
+  FIX // фиксированная зарплата
+}
+
+enum SalaryValueType {
+  PROCENT
+  CURRENCY
+}
+
 model Role {
   id   String  @id @db.Uuid
   name String?
@@ -20,10 +31,12 @@ model Role {
 }
 
 model Salary {
-  userId                  String @id @db.Uuid
-  mounth                  Int?
-  myPerfumeSaleInProcent  Int?
-  allPerfumeSaleInProcent Int?
+  userId String @id @db.Uuid
+  day    Int?
+
+  type      SalaryType      @default(FIX)
+  valueType SalaryValueType @default(CURRENCY)
+  value     Float
 
   user User @relation(fields: [userId], references: [id])
 }
@@ -40,5 +53,5 @@ model User {
   roleId String @db.Uuid
   role   Role   @relation(fields: [roleId], references: [id])
 
-  salary Salary?
+  salary Salary[]
 }

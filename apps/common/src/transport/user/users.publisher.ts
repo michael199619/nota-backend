@@ -1,7 +1,7 @@
 import { ClientKafka, ClientNats } from "@nestjs/microservices";
 import { userTopics, UserTopics } from "./constants";
 import { IUserGet, UserGetResponse } from "./dtos";
-import { IUserGetPerfume, userGetPerfumeResponse } from "./dtos/create";
+import { IUserGetPerfume, userGetPerfumeResponse } from "./dtos/create-user";
 import { IUserController } from "./user.interface";
 
 export class UsersPublisher implements IUserController {

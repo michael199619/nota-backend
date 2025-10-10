@@ -7,4 +7,21 @@ export enum UserTopics {
     USER_GET = 'user.get'
 }
 
+export enum RoleName {
+    ADMIN = 'admin',
+    PERFUMER = 'perfumer',
+    WATCHING = 'watching'
+}
+
+export enum SalaryValueType {
+    CURRENCY = 'CURRENCY',
+    PROCENT = 'PROCENT'
+}
+
+export enum SalaryType {
+    FIX = 'fix',
+    SALE_ALL_PRODUCT = 'SALE_ALL_PRODUCT',
+    SALE_OWN_PRODUCT = 'SALE_OWN_PRODUCT'
+}
+
 export const userTopics = Object.values(UserTopics);

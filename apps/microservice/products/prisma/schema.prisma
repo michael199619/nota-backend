@@ -84,15 +84,23 @@ model CollectionItem {
   product    Product?   @relation(fields: [productId], references: [id])
 }
 
+model ComponentHistory {
+  id          String    @id @db.Uuid
+  isFinish    Boolean   @default(false)
+  receiptId   String?   @db.Uuid // чек может быть одинаковым для нескольких компонентов
+  createdAt   DateTime  @updatedAt
+  componentId String    @db.Uuid
+  component   Component @relation(fields: [componentId], references: [id])
+}
+
 model Component {
-  id          String        @id @db.Uuid
-  name        String        @db.VarChar(255)
-  description String?       @db.Text
+  id          String             @id @db.Uuid
+  name        String             @db.VarChar(255)
+  description String?            @db.Text
   volume      Decimal
   provider    Provider
   type        ComponentType
-  receiptId   String?       @db.Uuid
-  isFinish    Boolean?
+  history     ComponentHistory[]
 }
 
 model ComponentItem {

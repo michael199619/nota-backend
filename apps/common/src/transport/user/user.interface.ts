@@ -1,7 +1,7 @@
 import { ControllerResponse } from "../../utils";
 import { IUserGet, UserGetResponse } from "./dtos";
-import { IUserGetPerfume } from "./dtos/create/create.dto";
-import { userGetPerfumeResponse } from "./dtos/create/create.response";
+import { IUserGetPerfume } from "./dtos/create-user/create-user.dto";
+import { userGetPerfumeResponse } from "./dtos/create-user/create-user.response";
 
 export interface IUserTransportOptions {
     clientId: string;
