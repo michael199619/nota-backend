@@ -1,5 +1,5 @@
-import { UserGetResponse } from "../get-user";
+import { GetUserResponse } from "../get-user";
 
-export class EditUserResponse extends UserGetResponse {
+export class EditUserResponse extends GetUserResponse {
 
 }

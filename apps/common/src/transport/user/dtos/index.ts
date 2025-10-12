@@ -5,6 +5,7 @@ export * from './edit-user';
 export * from './get-all-users';
 export * from './get-roles';
 export * from './get-salary-user';
+export * from './get-salary-users';
 export * from './get-user';
 export * from './remove-salary-user';
 export * from './remove-user';

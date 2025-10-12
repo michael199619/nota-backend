@@ -1,13 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class ShortResponse<V> {
+export class ShortResponse {
     @ApiProperty({
         description: 'Наименование',
     })
-    label: string;
+    name: string;
 
     @ApiProperty({
-        description: 'Значение'
+        description: 'Идентификатор'
     })
-    value: V
+    id: string
 }

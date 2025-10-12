@@ -4,16 +4,10 @@ import { Observable } from "rxjs";
 type Response<data> = Promise<data> | Observable<data> | data;
 export type ControllerResponse<data> = Promise<Response<data>> | Response<data>;
 
-export type IUsecase<func extends (...args: any[]) => any> = {
-    handler: (...args: Parameters<func>) => Promise<ReturnType<func>>
-}
+export abstract class Usecase<func extends (...args: any[]) => any> {
+    protected abstract handler(...args: Parameters<func>): ReturnType<func>
 
-export class Usecase<func extends (...args: any[]) => any> implements IUsecase<func> {
-    handler(...args: Parameters<func>): Promise<ReturnType<func>> {
-        throw 'handler is not exists';
-    }
-
-    async excecute(...args: Parameters<func>): Promise<ReturnType<func>> {
+    public async excecute(...args: Parameters<func>): Promise<ReturnType<func>> {
         try {
             return await this.handler(...args)
         } catch (e) {

@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { PaginationDto } from "@perfume-platform/common/utils";
 import { IsOptional, IsString } from "class-validator";
+import { PaginationDto } from "../../../../utils";
 
 export class GetRolesDto extends PaginationDto {
     @ApiProperty({

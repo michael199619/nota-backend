@@ -1,23 +1,23 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { IUserController, IUserGet, IUserGetPerfume, UserTopics } from '@perfume-platform/common';
-import { UserGetPerfumeUsecase } from './usecases/user-get-perfume/user-get.perfume.usecase';
-import { UserGetUsecase } from './usecases/user-get/user-get.usecase';
+import { MessagePattern } from '@nestjs/microservices';
+import { AddSalaryUserDto, ChangeRoleUserDto, UserTopics } from '@perfume-platform/common';
+import { AddSalaryUserUsecase } from './usecases/add-salary-user/add-salary-user.usecase';
+import { ChangeRoleUserUsecase } from './usecases/change-role-user/change-role-user.usecase';
 
 @Controller()
-export class AppController implements IUserController {
+export class AppController {
   constructor(
-    private readonly userGetUsecase: UserGetUsecase,
-    private readonly userGetPerfumeUsecase: UserGetPerfumeUsecase
+    private readonly addSalaryUserUsecase: AddSalaryUserUsecase,
+    private readonly changeRoleUserUsecase: ChangeRoleUserUsecase
   ) { }
 
-  @MessagePattern(UserTopics.USER_GET_PERFUME)
-  userGetPerfume(@Payload() data: IUserGetPerfume) {
-    return this.userGetPerfumeUsecase.excecute(data)
+  @MessagePattern(UserTopics.addSalaryUser)
+  async addSalaryUser(dto: AddSalaryUserDto) {
+    return await this.addSalaryUserUsecase.excecute(dto)
   }
 
-  @MessagePattern(UserTopics.USER_GET)
-  userGet(@Payload() data: IUserGet) {
-    return this.userGetUsecase.excecute(data)
+  @MessagePattern(UserTopics.changeRoleUser)
+  async changeRoleUser(dto: ChangeRoleUserDto) {
+    return await this.changeRoleUserUsecase.excecute(dto)
   }
 } 

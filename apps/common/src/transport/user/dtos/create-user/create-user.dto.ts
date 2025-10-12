@@ -1,3 +1,3 @@
-export class IUserGetPerfume {
-    id: string
+export class CreateUserDto {
+
 }

@@ -1,8 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { SalaryValueType } from "apps/microservice/users/src/db/prisma.service";
 import { IsEnum, IsInt, IsNumber, IsPositive, IsString, IsUUID, Max, Min } from "class-validator";
 import { randomUUID } from "crypto";
-import { SalaryType } from "../../constants";
+import { SalaryType, SalaryValueType } from "../../constants";
 
 export class AddSalaryUserDto {
     @ApiProperty({

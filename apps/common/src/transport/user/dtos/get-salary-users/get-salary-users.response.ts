@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { PaginationResponse } from "@perfume-platform/common/utils";
+import { PaginationResponse } from "../../../../utils";
 import { GetSalaryUserResponse } from "../get-salary-user/get-salary-user.response";
 
 

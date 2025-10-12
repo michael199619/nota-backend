@@ -16,42 +16,49 @@ enum SalaryType {
   SALE_OWN_PRODUCT // зарплата за продажу своего продукта
   SALE_ALL_PRODUCT // зарплата за продажу всей продукции
   FIX // фиксированная зарплата
+
+  @@map("salary_type")
 }
 
 enum SalaryValueType {
   PROCENT
   CURRENCY
+
+  @@map("salary_value_type")
 }
 
 model Role {
-  id   String  @id @db.Uuid
-  name String?
+  id   String @id @db.Uuid
+  name String
 
   users User[]
+
+  @@map("role")
 }
 
 model Salary {
-  userId String @id @db.Uuid
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @map("user_id") @db.Uuid
   day    Int?
 
   type      SalaryType      @default(FIX)
-  valueType SalaryValueType @default(CURRENCY)
+  valueType SalaryValueType @default(CURRENCY) @map("value_type")
   value     Float
 
   user User @relation(fields: [userId], references: [id])
 }
 
 model User {
-  id       String  @id @db.Uuid
+  id       String  @id @default(uuid()) @db.Uuid
   login    String
-  phone    Int
+  phone    String
   email    String
-  avatarId String? @db.Uuid
+  avatarId String? @map("avatar_id") @db.Uuid
   password String
   name     String
 
-  roleId String @db.Uuid
+  roleId String @map("role_id") @db.Uuid
   role   Role   @relation(fields: [roleId], references: [id])
 
-  salary Salary[]
+  salaries Salary[]
 }

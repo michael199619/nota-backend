@@ -1,9 +1,9 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { OrderPublisher, UsersPublisher } from '@perfume-platform/common';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AddSalaryUserDto, AddSalaryUserResponse, ChangeRoleUserDto, ChangeRoleUserResponse, OrderPublisher, UsersPublisher } from '@perfume-platform/common';
 import { firstValueFrom } from 'rxjs';
 
-@ApiTags('buyer')
+@ApiTags('user')
 @Controller()
 export class UserController {
     constructor(
@@ -11,18 +11,29 @@ export class UserController {
         private readonly orderPublisher: OrderPublisher
     ) { }
 
-    @Get(':id')
-    async userGet(
-        @Param('id') id: string
+    @Post('add-salary')
+    @ApiOperation({
+        description: 'Добавить заррплату пользователю',
+    })
+    @ApiResponse({
+        type: AddSalaryUserResponse
+    })
+    addSalaryUser(
+        @Body() dto: AddSalaryUserDto
     ) {
-        console.log(await firstValueFrom(this.orderPublisher.orderCreate({
-            userId: 'string',
-            productId: 'string',
-            quantity: 3,
-            total: 3
-        })))
-        return this.usersPublisher.userGet({ id });
+        return firstValueFrom(this.usersPublisher.addSalaryUser(dto))
+    }
 
-
+    @Post('change-role')
+    @ApiOperation({
+        description: 'Изменить роль пользователя',
+    })
+    @ApiResponse({
+        type: ChangeRoleUserResponse
+    })
+    changeRoleUser(
+        @Body() dto: ChangeRoleUserDto
+    ) {
+        return firstValueFrom(this.usersPublisher.changeRoleUser(dto))
     }
 } 

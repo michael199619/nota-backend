@@ -1,4 +1,4 @@
-import { PaginationDto } from "@perfume-platform/common/utils";
+import { PaginationDto } from "../../../../utils";
 
 export class GetAllUsersDto extends PaginationDto {
     search: string;

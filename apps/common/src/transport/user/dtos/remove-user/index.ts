@@ -1,3 +1,3 @@
-export * from './get.dto';
-export * from './get.response';
+export * from './remove-user.dto';
+export * from './remove-user.response';
 

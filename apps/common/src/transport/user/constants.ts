@@ -3,8 +3,17 @@ export const TRANSPORT_USER_NATS = 'TRANSPORT_USER_NATS';
 export const TRASPORT_USER_GROUP = 'TRANSPORT_USER_GROUP';
 
 export enum UserTopics {
-    USER_GET_PERFUME = 'user.get.perfume',
-    USER_GET = 'user.get'
+    addSalaryUser = 'add.salary.user',
+    changeRoleUser = 'change.salary.user',
+    createUser = 'create.user',
+    editUser = 'edit.user',
+    getAllUses = 'get.all.users',
+    getRoles = 'get.roles',
+    getSalaryUser = 'get.salary.user',
+    getSalaryUsers = 'get.salary.users',
+    getUser = 'get.user',
+    removeSalaryUser = 'remove.salary.user',
+    removeUser = 'remove.user',
 }
 
 export enum RoleName {
@@ -19,7 +28,7 @@ export enum SalaryValueType {
 }
 
 export enum SalaryType {
-    FIX = 'fix',
+    FIX = 'FIX',
     SALE_ALL_PRODUCT = 'SALE_ALL_PRODUCT',
     SALE_OWN_PRODUCT = 'SALE_OWN_PRODUCT'
 }

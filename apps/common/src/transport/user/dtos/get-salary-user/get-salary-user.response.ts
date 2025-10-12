@@ -16,28 +16,28 @@ export class Salary {
         description: 'День зарплаты',
         example: 15
     })
-    day: string;
+    day: number | null;
 
     @ApiProperty({
         enum: SalaryType,
         description: 'Тип зарплаты',
         example: SalaryType.FIX
     })
-    type: SalaryType;
+    type: `${SalaryType}`;
 
     @ApiProperty({
         enum: SalaryValueType,
         description: 'Тип оплаты',
         example: SalaryValueType.CURRENCY
     })
-    valueType: SalaryValueType;
+    valueType: `${SalaryValueType}`;
 
     @ApiProperty({
         type: Number,
         description: 'Сумма',
         example: 10
     })
-    val: number;
+    value: number;
 }
 
 export class GetSalaryUserResponse extends GetAllUsers {

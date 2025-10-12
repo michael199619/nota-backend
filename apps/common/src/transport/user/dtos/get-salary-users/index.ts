@@ -1,3 +1,3 @@
-export * from './create-user.dto';
-export * from './create-user.response';
+export * from './get-salary-users.dto';
+export * from './get-salary-users.response';
 

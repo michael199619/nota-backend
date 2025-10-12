@@ -1,5 +1,5 @@
 import { GetSalaryUserResponse } from "../get-salary-user";
 
-export class RemoveSalaryResponse extends GetSalaryUserResponse {
+export class RemoveSalaryUserResponse extends GetSalaryUserResponse {
 
 }

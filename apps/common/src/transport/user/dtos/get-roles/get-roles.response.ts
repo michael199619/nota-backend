@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { PaginationResponse, ShortResponse } from "@perfume-platform/common/utils";
+import { PaginationResponse, ShortResponse } from "../../../../utils";
 
-class ShortRole extends ShortResponse<string> {
+export class ShortRole extends ShortResponse {
 
 }
 

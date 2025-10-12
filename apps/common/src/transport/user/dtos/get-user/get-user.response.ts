@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { randomUUID } from "crypto";
-import { RoleName } from "../../constants";
+import { ShortRole } from "../get-roles";
 
-export class UserGetResponse {
+export class GetUserResponse {
     @ApiProperty({
         type: String,
         description: 'Идентификатор пользователя',
@@ -43,12 +43,11 @@ export class UserGetResponse {
         description: 'Идентификатор для стора с фото',
         example: randomUUID()
     })
-    avatarId: string;
+    avatarId: string | null;
 
     @ApiProperty({
-        enum: RoleName,
-        description: 'Роль пользователя',
-        example: RoleName.PERFUMER
+        type: ShortRole,
+        description: 'Роль пользователя'
     })
-    roleName: RoleName;
+    role: ShortRole
 }

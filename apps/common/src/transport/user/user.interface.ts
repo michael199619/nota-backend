@@ -1,7 +1,6 @@
 import { ControllerResponse } from "../../utils";
-import { IUserGet, UserGetResponse } from "./dtos";
-import { IUserGetPerfume } from "./dtos/create-user/create-user.dto";
-import { userGetPerfumeResponse } from "./dtos/create-user/create-user.response";
+import { AddSalaryUserDto, AddSalaryUserResponse, ChangeRoleUserDto, ChangeRoleUserResponse, CreateUserDto, CreateUserResponse, EditUserDto, EditUserResponse, GetAllUsersResponse, GetRolesDto, GetRolesResponse, GetSalaryUserDto, GetSalaryUserResponse, GetUserDto, GetUserResponse, RemoveSalaryUserDto, RemoveSalaryUserResponse, RemoveUserDto, RemoveUserResponse } from "./dtos";
+import { GetSalaryUsersDto, GetSalaryUsersResponse } from "./dtos/get-salary-users";
 
 export interface IUserTransportOptions {
     clientId: string;
@@ -10,8 +9,15 @@ export interface IUserTransportOptions {
 }
 
 export type IUserController = {
-    userGetPerfume: (dto: IUserGetPerfume) => ControllerResponse<userGetPerfumeResponse>
-    userGet: (dto: IUserGet) => ControllerResponse<UserGetResponse>
-    // userDelete: (dto: UserCreateDto) => ControllerResponse<UserCreateResponse>
-
+    addSalaryUser(dto: AddSalaryUserDto): ControllerResponse<AddSalaryUserResponse>
+    changeRoleUser(dto: ChangeRoleUserDto): ControllerResponse<ChangeRoleUserResponse>
+    createUser(dto: CreateUserDto): ControllerResponse<CreateUserResponse>
+    editUser(dto: EditUserDto): ControllerResponse<EditUserResponse>
+    getAllUsers(dto: GetAllUsersResponse): ControllerResponse<GetAllUsersResponse>
+    getRoles(dto: GetRolesDto): ControllerResponse<GetRolesResponse>
+    getSalaryUser(dto: GetSalaryUserDto): ControllerResponse<GetSalaryUserResponse>
+    getSalaryUsers(dto: GetSalaryUsersDto): ControllerResponse<GetSalaryUsersResponse>
+    getUser(dto: GetUserDto): ControllerResponse<GetUserResponse>
+    removeSalaryUser(dto: RemoveSalaryUserDto): ControllerResponse<RemoveSalaryUserResponse>
+    removeUser(dto: RemoveUserDto): ControllerResponse<RemoveUserResponse>
 }
