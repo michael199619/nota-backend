@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, IsUUID, Min } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, IsUUID, Length } from "class-validator";
 import { randomUUID } from "crypto";
 
 export class EditUserDto {
@@ -13,45 +13,55 @@ export class EditUserDto {
 
     @ApiProperty({
         type: String,
+        required: false,
         description: 'Имя пользователя',
         example: 'Катя'
     })
+    @IsOptional()
     @IsString()
     @IsNotEmpty()
-    @Min(2)
-    name: string;
+    @Length(2)
+    name?: string;
 
     @ApiProperty({
+        required: false,
         type: String,
         description: 'Логин пользователя',
         example: 'katya'
     })
     @IsString()
     @IsNotEmpty()
-    @Min(4)
-    login: string;
+    @IsOptional()
+    @Length(4)
+    login?: string;
 
     @ApiProperty({
         type: String,
-        description: 'Идентификатор пользователя',
+        required: false,
+        description: 'Телефон пользователя',
         example: 'Катя'
     })
+    @IsOptional()
     @IsPhoneNumber()
-    phone: string;
+    phone?: string;
 
     @ApiProperty({
         type: String,
-        description: 'Идентификатор пользователя',
+        required: false,
+        description: 'Почта пользователя',
         example: 'Катя'
     })
     @IsEmail()
-    email: string;
+    @IsOptional()
+    email?: string;
 
     @ApiProperty({
         type: String,
+        required: false,
         description: 'Идентификатор фото из стора',
         example: randomUUID()
     })
     @IsUUID()
-    avatarId: string;
+    @IsOptional()
+    avatarId?: string;
 }

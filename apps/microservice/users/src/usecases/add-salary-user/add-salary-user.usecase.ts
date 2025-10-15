@@ -14,7 +14,7 @@ export class AddSalaryUserUsecase extends Usecase<IUserController['addSalaryUser
         return super.excecute(dto)
     }
 
-    protected async handler(dto: AddSalaryUserDto): Promise<AddSalaryUserResponse> {
+    async handler(dto: AddSalaryUserDto): Promise<AddSalaryUserResponse> {
         if (!await this.userResponse.getUserById(dto.id)) {
             throw new NotFoundException('user is not esists')
         }

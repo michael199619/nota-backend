@@ -1,9 +1,10 @@
+import { HttpStatus } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class RemoveUserResponse {
     @ApiProperty({
         description: 'Статус',
-        example: 'success'
+        example: HttpStatus.OK
     })
-    status: string;
+    status: HttpStatus;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { AddSalaryUserDto, ChangeRoleUserDto } from "@perfume-platform/common";
+import { AddSalaryUserDto, ChangeRoleUserDto, CreateUserDto, EditUserDto, GetAllUsersDto, GetSalaryUsersDto, RemoveSalaryUserDto } from "@perfume-platform/common";
 import { Repository } from "../base.repository";
-import { PrismaService } from "../prisma.service";
+import { Prisma, PrismaService, User } from "../prisma.service";
 import { selectSalary, selectShort, selectUser } from "./users.select";
 
 @Injectable()
@@ -12,29 +12,72 @@ export class UsersRepository extends Repository {
         super(prisma);
     }
 
-    getUsers() {
-        return this.prisma.user.findMany()
+    async getUsers(dto: GetAllUsersDto) {
+        const where: Prisma.UserWhereInput = {
+            //     ...this.getContains<User>('name', dto.seatch),
+        }
+
+        const [data, total] = await Promise.all([
+            this.prisma.user.findMany({
+                where,
+                select: {
+                    ...selectShort,
+                    role: {
+                        select: selectShort
+                    }
+                },
+                ...this.preparePagination(dto)
+            }),
+            this.prisma.user.count({ where })
+        ]);
+
+        return this.paginationResponse({ data, total })
     }
 
     getUserById(id: string) {
         return this.prisma.user.findFirst({
             where: { id },
             select: {
-                id: true
+                ...selectUser,
+                role: {
+                    select: selectShort
+                }
             }
         })
     }
 
-    createUser() {
-
+    createUser(data: CreateUserDto) {
+        return this.prisma.user.create({
+            data,
+            select: {
+                ...selectUser,
+                role: {
+                    select: selectShort
+                }
+            }
+        })
     }
 
-    editUser(id: string) {
-
+    editUser({ id, ...data }: EditUserDto) {
+        return this.prisma.user.update({
+            where: { id },
+            data,
+            select: {
+                ...selectUser,
+                role: {
+                    select: selectShort
+                }
+            }
+        })
     }
 
     removeUserById(id: string) {
-
+        return this.prisma.user.delete({
+            where: { id },
+            select: {
+                id: true
+            }
+        })
     }
 
     changeRoleUser(dto: ChangeRoleUserDto) {
@@ -81,8 +124,59 @@ export class UsersRepository extends Repository {
         return user
     }
 
-    removeSalaryUserById(id: string) {
-
+    async removeSalaryUser({ ids, userId }: RemoveSalaryUserDto) {
+        await this.prisma.salary.deleteMany({
+            where: { userId, id: { in: ids } },
+        });
     }
 
+    getSalaryUserById(id: string) {
+        return this.prisma.user.findFirst({
+            where: { id },
+            select: {
+                ...selectShort,
+                salaries: {
+                    select: {
+                        ...selectSalary,
+                        user: false
+                    }
+                },
+                role: {
+                    select: selectShort
+                }
+            }
+        });
+    }
+
+    async getSalaryUsers(dto: GetSalaryUsersDto) {
+        const where: Prisma.UserWhereInput = {};
+
+        if (dto.search) {
+            where.OR = where.OR || [];
+
+            where.OR.push(this.getContains<User>('name', dto.search)!);
+            where.OR.push(this.getContains<User>('login', dto.search)!);
+            where.OR.push(this.getContains<User>('email', dto.search)!);
+            where.OR.push(this.getContains<User>('phone', dto.search)!);
+        }
+
+        const [data, total] = await Promise.all([
+            this.prisma.user.findMany({
+                where,
+                select: {
+                    ...selectUser,
+                    salaries: {
+                        select: selectSalary
+                    },
+                    role: {
+                        select: selectShort
+                    },
+                },
+                ...this.preparePagination(dto)
+            }),
+            this.prisma.user.count({ where })
+        ]);
+
+        return this.paginationResponse({ data, total })
+    }
 } 

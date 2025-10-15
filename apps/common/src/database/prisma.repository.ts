@@ -1,4 +1,5 @@
 
+import { PaginationDto, PaginationResponse } from '../utils';
 import {
   BasePrismaClient,
   BaseTransactionClient,
@@ -56,47 +57,45 @@ export abstract class PrismaRepository<
     return cb(tx);
   }
 
-  // public preparePagination(pagination?: Partial<PaginationDto>): {
-  //   skip?: number;
-  //   page?: number;
-  //   take?: number;
-  // } {
-  //   if (typeof pagination === 'undefined') {
-  //     return {};
-  //   }
+  public preparePagination(pagination: PaginationDto): {
+    skip?: number;
+    take?: number;
+  } {
+    const page = Math.round(pagination.page);
+    const take = Math.round(pagination.limit);
 
-  //   const page =
-  //     typeof pagination.page === 'undefined' || pagination.page < 1
-  //       ? PaginationDto.DEFAULT_PAGE
-  //       : Math.round(pagination.page);
+    return { take, skip: (page - 1) * take };
+  }
 
-  //   const take =
-  //     typeof pagination.limit === 'undefined' || pagination.limit < 1
-  //       ? PaginationDto.DEFAULT_LIMIT
-  //       : Math.round(pagination.limit);
+  public paginationResponse<T>({
+    data,
+    total,
+    take,
+    page,
+  }: {
+    data: T[];
+    total: number;
+    take?: number;
+    page?: number;
+  }): PaginationResponse<T> {
+    return {
+      data,
+      perPage: take ?? total,
+      pageCount: take ? Math.ceil(total / take) : 1,
+      total,
+      page: page ?? 1,
+    };
+  }
 
-  //   return { page, take, skip: (page - 1) * take };
-  // }
+  public getContains<Values extends object, K extends keyof Values = keyof Values>(key: K, value?: string) {
+    if (value) {
+      return {
+        [key]: {
+          contains: value
+        }
+      }
+    }
 
-  // public paginationResponse<T extends any[]>({
-  //   data,
-  //   totalCount,
-  //   pageTotalCount,
-  //   take,
-  //   page,
-  // }: {
-  //   data: T;
-  //   totalCount: number;
-  //   pageTotalCount?: number;
-  //   take?: number;
-  //   page?: number;
-  // }): PaginationResponse & { data: T } {
-  //   return {
-  //     data,
-  //     perPage: take ?? totalCount,
-  //     pageCount: take ? Math.ceil((pageTotalCount ?? totalCount) / take) : 1,
-  //     totalCount,
-  //     page: page ?? 1,
-  //   };
-  // }
+    return;
+  }
 }

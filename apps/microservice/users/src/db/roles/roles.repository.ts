@@ -1,18 +1,31 @@
 import { Injectable } from "@nestjs/common";
+import { GetRolesDto } from "@perfume-platform/common";
 import { Repository } from "../base.repository";
-import { PrismaService } from "../prisma.service";
+import { Prisma, PrismaService, Role } from "../prisma.service";
+import { selectShort } from "../users/users.select";
 
 @Injectable()
-export class AuthRepository extends Repository {
+export class RolesRepository extends Repository {
     constructor(
         prisma: PrismaService,
     ) {
         super(prisma);
     }
 
-    login(password: string, email: string) {
-        return this.prisma.user.findFirst({
-            where: { password, email }
-        });
+    async getRoles(dto: GetRolesDto) {
+        const where: Prisma.RoleWhereInput = {
+            ...this.getContains<Role>('name', dto.search),
+        }
+
+        const [data, total] = await Promise.all([
+            this.prisma.role.findMany({
+                where,
+                select: selectShort,
+                ...this.preparePagination(dto)
+            }),
+            this.prisma.role.count({ where })
+        ]);
+
+        return this.paginationResponse({ data, total })
     }
 }

@@ -5,10 +5,20 @@ import { randomUUID } from "crypto";
 export class RemoveSalaryUserDto {
     @ApiProperty({
         type: String,
-        description: 'Идентификатор зарплаты пользователя',
+        description: 'Идентификатор пользователя',
         example: randomUUID()
     })
     @IsUUID()
     @IsString()
-    id: string;
+    userId: string;
+
+    @ApiProperty({
+        type: String,
+        isArray: true,
+        description: 'Идентификаторы зарплат пользователя',
+        example: [randomUUID()]
+    })
+    @IsUUID(undefined, { each: true })
+    @IsString({ each: true })
+    ids: string[];
 }

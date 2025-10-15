@@ -2,7 +2,7 @@ import {
   INestApplication,
   Logger,
   OnApplicationBootstrap,
-  OnApplicationShutdown,
+  OnApplicationShutdown
 } from '@nestjs/common';
 import { setTimeout } from 'timers/promises';
 import {

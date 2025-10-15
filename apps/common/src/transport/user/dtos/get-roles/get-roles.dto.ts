@@ -4,11 +4,12 @@ import { PaginationDto } from "../../../../utils";
 
 export class GetRolesDto extends PaginationDto {
     @ApiProperty({
+        required: false,
         type: String,
         description: 'Поиск',
         example: 'coo'
     })
     @IsString()
     @IsOptional()
-    seatch?: string;
+    search?: string;
 }

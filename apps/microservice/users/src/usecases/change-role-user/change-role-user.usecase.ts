@@ -14,7 +14,7 @@ export class ChangeRoleUserUsecase extends Usecase<IUserController['changeRoleUs
         return super.excecute(dto)
     }
 
-    protected async handler(dto: ChangeRoleUserDto): Promise<ChangeRoleUserResponse> {
+    async handler(dto: ChangeRoleUserDto): Promise<ChangeRoleUserResponse> {
         if (!await this.userRepository.getUserById(dto.id)) {
             throw new NotFoundException('user is not esists')
         }

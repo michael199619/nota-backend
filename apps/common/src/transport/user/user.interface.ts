@@ -1,5 +1,5 @@
 import { ControllerResponse } from "../../utils";
-import { AddSalaryUserDto, AddSalaryUserResponse, ChangeRoleUserDto, ChangeRoleUserResponse, CreateUserDto, CreateUserResponse, EditUserDto, EditUserResponse, GetAllUsersResponse, GetRolesDto, GetRolesResponse, GetSalaryUserDto, GetSalaryUserResponse, GetUserDto, GetUserResponse, RemoveSalaryUserDto, RemoveSalaryUserResponse, RemoveUserDto, RemoveUserResponse } from "./dtos";
+import { AddSalaryUserDto, AddSalaryUserResponse, ChangeRoleUserDto, ChangeRoleUserResponse, CreateUserDto, CreateUserResponse, EditUserDto, EditUserResponse, GetAllUsersDto, GetAllUsersResponse, GetRolesDto, GetRolesResponse, GetSalaryUserDto, GetSalaryUserResponse, GetUserDto, GetUserResponse, RemoveSalaryUserDto, RemoveSalaryUserResponse, RemoveUserDto, RemoveUserResponse } from "./dtos";
 import { GetSalaryUsersDto, GetSalaryUsersResponse } from "./dtos/get-salary-users";
 
 export interface IUserTransportOptions {
@@ -13,7 +13,7 @@ export type IUserController = {
     changeRoleUser(dto: ChangeRoleUserDto): ControllerResponse<ChangeRoleUserResponse>
     createUser(dto: CreateUserDto): ControllerResponse<CreateUserResponse>
     editUser(dto: EditUserDto): ControllerResponse<EditUserResponse>
-    getAllUsers(dto: GetAllUsersResponse): ControllerResponse<GetAllUsersResponse>
+    getAllUsers(dto: GetAllUsersDto): ControllerResponse<GetAllUsersResponse>
     getRoles(dto: GetRolesDto): ControllerResponse<GetRolesResponse>
     getSalaryUser(dto: GetSalaryUserDto): ControllerResponse<GetSalaryUserResponse>
     getSalaryUsers(dto: GetSalaryUsersDto): ControllerResponse<GetSalaryUsersResponse>

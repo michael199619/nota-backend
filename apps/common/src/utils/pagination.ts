@@ -43,10 +43,22 @@ export abstract class PaginationResponse<data> implements IPaginationResponse<da
     page: number;
 
     @ApiProperty({
-        description: 'Всего',
+        description: 'Всего количества',
         example: '10',
     })
     total: number;
+
+    @ApiProperty({
+        description: 'Текущая страница',
+        example: '10',
+    })
+    perPage: number;
+
+    @ApiProperty({
+        description: 'Всего страниц',
+        example: '10',
+    })
+    pageCount: number;
 
     abstract data: data[];
 }
