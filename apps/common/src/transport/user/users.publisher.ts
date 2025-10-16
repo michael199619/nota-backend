@@ -1,6 +1,6 @@
 import { ClientKafka, ClientNats } from "@nestjs/microservices";
-import { UserTopics, userTopics } from "./constants";
-import { AddSalaryUserDto, AddSalaryUserResponse, ChangeRoleUserDto, ChangeRoleUserResponse, CreateUserDto, CreateUserResponse, EditUserDto, EditUserResponse, GetAllUsersDto, GetAllUsersResponse, GetRolesDto, GetRolesResponse, GetSalaryUserDto, GetSalaryUserResponse, GetSalaryUsersDto, GetSalaryUsersResponse, GetUserDto, GetUserResponse, RemoveSalaryUserDto, RemoveSalaryUserResponse, RemoveUserDto, RemoveUserResponse } from "./dtos";
+import { UserSubject, UserTopics, userTopics } from "./constants";
+import { AddSalaryUserDto, AddSalaryUserResponse, ChangePasswordUserDto, ChangePasswordUserResponse, ChangeRoleUserDto, ChangeRoleUserResponse, CreateUserDto, CreateUserResponse, EditUserDto, EditUserResponse, GetAllUsersDto, GetAllUsersResponse, GetRolesDto, GetRolesResponse, GetSalaryUserDto, GetSalaryUserResponse, GetSalaryUsersDto, GetSalaryUsersResponse, GetUserDto, GetUserResponse, LoginUserDto, LoginUserResponse, LogoutUserDto, LogoutUserResponse, RefreshTokenUserDto, RefreshTokenUserResponse, RemoveSalaryUserDto, RemoveSalaryUserResponse, RemoveUserDto, RemoveUserResponse } from "./dtos";
 import { IUserController } from "./user.interface";
 
 export class UsersPublisher implements IUserController {
@@ -24,7 +24,7 @@ export class UsersPublisher implements IUserController {
     }
 
     createUser(dto: CreateUserDto) {
-        return this.natsService.send<CreateUserResponse>(UserTopics.getUser, dto)
+        return this.natsService.send<CreateUserResponse>(UserTopics.createUser, dto)
     }
 
     editUser(dto: EditUserDto) {
@@ -57,5 +57,21 @@ export class UsersPublisher implements IUserController {
 
     removeUser(dto: RemoveUserDto) {
         return this.kafkaService.send<RemoveUserResponse>(UserTopics.removeUser, dto)
+    }
+
+    changePasswordUser(dto: ChangePasswordUserDto) {
+        return this.natsService.send<ChangePasswordUserResponse>(UserSubject.changePasswordUser, dto)
+    }
+
+    loginUser(dto: LoginUserDto) {
+        return this.natsService.send<LoginUserResponse>(UserSubject.loginUser, dto)
+    }
+
+    logoutUser(dto: LogoutUserDto) {
+        return this.natsService.send<LogoutUserResponse>(UserSubject.logoutUser, dto)
+    }
+
+    refreshTokenUser(dto: RefreshTokenUserDto) {
+        return this.natsService.send<RefreshTokenUserResponse>(UserSubject.refreshTokenUser, dto)
     }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { prismaServiceFabric, roles, users } from '@perfume-platform/common';
+import { PasswordHasher, prismaServiceFabric, roles, users } from '@perfume-platform/common';
 import { PrismaClient } from 'prisma_types/users';
 export * from 'prisma_types/users';
 
@@ -25,11 +25,14 @@ export class PrismaService extends prismaServiceFabric(
       })
     }))
 
-    await Promise.all(users.map((user) => {
+    await Promise.all(users.map(async (user) => {
       return this.user.upsert({
         where: { id: user.id },
         update: {},
-        create: user
+        create: {
+          ...user,
+          password: await PasswordHasher.getHashPassword(user.password)
+        }
       })
     }))
   }

@@ -1,4 +1,5 @@
 import { registerAs } from '@nestjs/config';
+import { JwtSignOptions } from '@nestjs/jwt';
 import { get } from 'env-var';
 
 export const appConfig = registerAs('app', () => ({
@@ -23,6 +24,9 @@ export const natsConfig = registerAs('nats', () => ({
 }));
 
 export const jwtConfig = registerAs('jwt', () => ({
-    secret: get('JWT_SECRET').default('your-super-secret-jwt-key').asString(),
-    expiresIn: get('JWT_EXPIRES_IN').default('24h').asString(),
+    secret: get('JWT_SECRET').default('secret').asString(),
+    tokenRefresh: get('JWT_REFRESH_SECRET').default('your-super-secret-jwt-key').asString(),
+    tokenAccess: get('JWT_ACCESS_SECRET').default('your-super-secret-jwt-key').asString(),
+    refreshExpiresIn: get('JWT_REFRESH_EXPIRES_IN').default('7d').asString() as JwtSignOptions['expiresIn'],
+    accessExpiresIn: get('JWT_REFRESH_EXPIRES_IN').default('15m').asString() as JwtSignOptions['expiresIn'],
 }));

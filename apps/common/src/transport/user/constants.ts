@@ -16,6 +16,13 @@ export enum UserTopics {
     removeUser = 'remove.user',
 }
 
+export enum UserSubject {
+    changePasswordUser = 'change.password.user',
+    loginUser = 'login.user',
+    logoutUser = 'logout.user',
+    refreshTokenUser = 'refresh.token.user'
+}
+
 export enum RoleName {
     ADMIN = 'admin',
     PERFUMER = 'perfumer',

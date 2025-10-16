@@ -1,6 +1,5 @@
 import { ControllerResponse } from "../../utils";
-import { AddSalaryUserDto, AddSalaryUserResponse, ChangeRoleUserDto, ChangeRoleUserResponse, CreateUserDto, CreateUserResponse, EditUserDto, EditUserResponse, GetAllUsersDto, GetAllUsersResponse, GetRolesDto, GetRolesResponse, GetSalaryUserDto, GetSalaryUserResponse, GetUserDto, GetUserResponse, RemoveSalaryUserDto, RemoveSalaryUserResponse, RemoveUserDto, RemoveUserResponse } from "./dtos";
-import { GetSalaryUsersDto, GetSalaryUsersResponse } from "./dtos/get-salary-users";
+import { AddSalaryUserDto, AddSalaryUserResponse, ChangePasswordUserDto, ChangePasswordUserResponse, ChangeRoleUserDto, ChangeRoleUserResponse, CreateUserDto, CreateUserResponse, EditUserDto, EditUserResponse, GetAllUsersDto, GetAllUsersResponse, GetRolesDto, GetRolesResponse, GetSalaryUserDto, GetSalaryUserResponse, GetSalaryUsersDto, GetSalaryUsersResponse, GetUserDto, GetUserResponse, LoginUserDto, LoginUserResponse, LogoutUserDto, LogoutUserResponse, RefreshTokenUserDto, RefreshTokenUserResponse, RemoveSalaryUserDto, RemoveSalaryUserResponse, RemoveUserDto, RemoveUserResponse } from "./dtos";
 
 export interface IUserTransportOptions {
     clientId: string;
@@ -20,4 +19,9 @@ export type IUserController = {
     getUser(dto: GetUserDto): ControllerResponse<GetUserResponse>
     removeSalaryUser(dto: RemoveSalaryUserDto): ControllerResponse<RemoveSalaryUserResponse>
     removeUser(dto: RemoveUserDto): ControllerResponse<RemoveUserResponse>
+    changePasswordUser(dto: ChangePasswordUserDto): ControllerResponse<ChangePasswordUserResponse>
+    loginUser(dto: LoginUserDto): ControllerResponse<LoginUserResponse>
+    logoutUser(dto: LogoutUserDto): ControllerResponse<LogoutUserResponse>
+    refreshTokenUser(dto: RefreshTokenUserDto): ControllerResponse<RefreshTokenUserResponse>
+
 }

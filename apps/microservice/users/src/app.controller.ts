@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { AddSalaryUserDto, ChangeRoleUserDto, CreateUserDto, EditUserDto, GetAllUsersDto, GetRolesDto, GetSalaryUserDto, GetSalaryUsersDto, GetUserDto, IUserController, RemoveSalaryUserDto, RemoveUserDto, UserTopics } from '@perfume-platform/common';
+import { AddSalaryUserDto, ChangeRoleUserDto, CreateUserDto, EditUserDto, GetAllUsersDto, GetRolesDto, GetSalaryUserDto, GetSalaryUsersDto, GetUserDto, LoginUserDto, RemoveSalaryUserDto, RemoveUserDto, UserSubject, UserTopics } from '@perfume-platform/common';
 import { AddSalaryUserUsecase } from './usecases/add-salary-user/add-salary-user.usecase';
 import { ChangeRoleUserUsecase } from './usecases/change-role-user/change-role-user.usecase';
 import { CreateUserUsecase } from './usecases/create-user/create-user.usecase';
@@ -10,11 +10,12 @@ import { GetRolesUsecase } from './usecases/get-roles/get-roles.usecase';
 import { GetSalaryUserUsecase } from './usecases/get-salary-user/get-salary-user.usecase';
 import { GetSalaryUsersUsecase } from './usecases/get-salary-users/get-salary-users.usecase';
 import { GetUserUsecase } from './usecases/get-user/get-user.usecase';
+import { LoginUserUsecase } from './usecases/login-user/login-user.usecase';
 import { RemoveSalaryUserUsecase } from './usecases/remove-salary-user/remove-salary-user.usecase';
 import { RemoveUserUsecase } from './usecases/remove-user/remove-user.usecase';
 
 @Controller()
-export class AppController implements IUserController {
+export class AppController {
   constructor(
     private readonly addSalaryUserUsecase: AddSalaryUserUsecase,
     private readonly changeRoleUserUsecase: ChangeRoleUserUsecase,
@@ -26,7 +27,8 @@ export class AppController implements IUserController {
     private readonly getRolesUsecase: GetRolesUsecase,
     private readonly getSalaryUserUsecase: GetSalaryUserUsecase,
     private readonly getSalaryUsersUsecase: GetSalaryUsersUsecase,
-    private readonly getUserUsecase: GetUserUsecase
+    private readonly getUserUsecase: GetUserUsecase,
+    private readonly loginUserUsecase: LoginUserUsecase
   ) { }
 
   @MessagePattern(UserTopics.addSalaryUser)
@@ -82,5 +84,10 @@ export class AppController implements IUserController {
   @MessagePattern(UserTopics.getUser)
   async getUser(dto: GetUserDto) {
     return await this.getUserUsecase.excecute(dto)
+  }
+
+  @MessagePattern(UserSubject.loginUser)
+  async loginUser(dto: LoginUserDto) {
+    return await this.loginUserUsecase.excecute(dto)
   }
 } 

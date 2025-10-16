@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CreateUserDto, CreateUserResponse, IUserController, Usecase } from "@perfume-platform/common";
+import { CreateUserDto, CreateUserResponse, IUserController, PasswordHasher, Usecase } from "@perfume-platform/common";
 import { UsersRepository } from "../../db/users/users.repository";
 
 @Injectable()
@@ -15,6 +15,9 @@ export class CreateUserUsecase extends Usecase<IUserController['createUser']> {
     }
 
     async handler(dto: CreateUserDto): Promise<CreateUserResponse> {
-        return await this.userRepository.createUser(dto);
+        return await this.userRepository.createUser({
+            ...dto,
+            password: await PasswordHasher.getHashPassword(dto.password)
+        });
     }
 }

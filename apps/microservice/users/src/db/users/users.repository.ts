@@ -12,6 +12,16 @@ export class UsersRepository extends Repository {
         super(prisma);
     }
 
+    getUserByLogin(login: string) {
+        return this.prisma.user.findFirst({
+            select: {
+                id: true,
+                password: true
+            },
+            where: { login }
+        })
+    }
+
     async getUsers(dto: GetAllUsersDto) {
         const where: Prisma.UserWhereInput = {
             //     ...this.getContains<User>('name', dto.seatch),

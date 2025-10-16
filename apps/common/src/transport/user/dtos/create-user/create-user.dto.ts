@@ -51,7 +51,7 @@ export class CreateUserDto {
 
     @ApiProperty({
         type: String,
-        description: 'Идентификатор фото из стора',
+        description: 'Идентификатор роли из стора',
         example: randomUUID()
     })
     @IsUUID()
@@ -59,8 +59,8 @@ export class CreateUserDto {
 
     @ApiProperty({
         type: String,
-        description: 'Идентификатор фото из стора',
-        example: randomUUID()
+        description: 'Пароль',
+        example: 'password'
     })
     @IsString()
     @IsNotEmpty()
