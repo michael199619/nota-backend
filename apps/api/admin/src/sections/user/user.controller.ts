@@ -1,13 +1,13 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Put, Query } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AddSalaryUserResponse, ChangeRoleUserResponse, CreateUserDto, CreateUserResponse, EditUserResponse, GetAllUsersDto, GetAllUsersResponse, GetSalaryUserResponse, GetSalaryUsersDto, GetSalaryUsersResponse, GetUserResponse, OrderPublisher, RemoveSalaryUserResponse, RemoveUserResponse, UsersPublisher } from '@perfume-platform/common';
+import { Body,Controller,Delete,Get,Param,ParseUUIDPipe,Post,Put,Query } from '@nestjs/common';
+import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
+import { AddSalaryUserResponse,ChangeRoleUserResponse,CreateUserDto,CreateUserResponse,EditUserResponse,GetAllUsersDto,GetAllUsersResponse,GetSalaryUserResponse,GetSalaryUsersDto,GetSalaryUsersResponse,GetUserResponse,OrderPublisher,RemoveSalaryUserResponse,RemoveUserResponse,UserPublisher } from '@perfume-platform/common';
 import { firstValueFrom } from 'rxjs';
-import { AdminAddSalaryUserDto, AdminChangeRoleUserDto, AdminEditUserDto, AdminGetSalaryUserDto, AdminGetUserDto, AdminRemoveSalaryUserDto } from './user.dto';
+import { AdminAddSalaryUserDto,AdminChangeRoleUserDto,AdminEditUserDto,AdminGetSalaryUserDto,AdminGetUserDto,AdminRemoveSalaryUserDto } from './user.dto';
 @ApiTags('Пользователи')
 @Controller('users')
 export class UserController {
     constructor(
-        private readonly usersPublisher: UsersPublisher,
+        private readonly userPublisher: UserPublisher,
         private readonly orderPublisher: OrderPublisher
     ) { }
 
@@ -22,7 +22,7 @@ export class UserController {
         @Body() dto: AdminAddSalaryUserDto,
         @Param('id', ParseUUIDPipe) id: string
     ) {
-        return firstValueFrom(this.usersPublisher.addSalaryUser({ ...dto, id }))
+        return firstValueFrom(this.userPublisher.addSalaryUser({ ...dto, id }))
     }
 
     @Post(':id/role')
@@ -36,7 +36,7 @@ export class UserController {
         @Body() dto: AdminChangeRoleUserDto,
         @Param('id', ParseUUIDPipe) id: string
     ) {
-        return firstValueFrom(this.usersPublisher.changeRoleUser({ ...dto, id }))
+        return firstValueFrom(this.userPublisher.changeRoleUser({ ...dto, id }))
     }
 
     @Post()
@@ -49,7 +49,7 @@ export class UserController {
     createUser(
         @Body() dto: CreateUserDto
     ) {
-        return firstValueFrom(this.usersPublisher.createUser(dto))
+        return firstValueFrom(this.userPublisher.createUser(dto))
     }
 
     @Put(':id')
@@ -63,7 +63,7 @@ export class UserController {
         @Body() dto: AdminEditUserDto,
         @Param('id', ParseUUIDPipe) id: string
     ) {
-        return firstValueFrom(this.usersPublisher.editUser({ ...dto, id }))
+        return firstValueFrom(this.userPublisher.editUser({ ...dto, id }))
     }
 
     @Get()
@@ -76,7 +76,7 @@ export class UserController {
     getAll(
         @Query() dto: GetAllUsersDto
     ) {
-        return firstValueFrom(this.usersPublisher.getAllUsers(dto))
+        return firstValueFrom(this.userPublisher.getAllUsers(dto))
     }
 
     @Get(':id/salary')
@@ -90,7 +90,7 @@ export class UserController {
         @Query() dto: AdminGetSalaryUserDto,
         @Param('id', ParseUUIDPipe) id: string
     ) {
-        return firstValueFrom(this.usersPublisher.getSalaryUser({ id, ...dto }))
+        return firstValueFrom(this.userPublisher.getSalaryUser({ id, ...dto }))
     }
 
     @Get('salary')
@@ -103,7 +103,7 @@ export class UserController {
     getSalaryUsers(
         @Query() dto: GetSalaryUsersDto
     ) {
-        return firstValueFrom(this.usersPublisher.getSalaryUsers(dto))
+        return firstValueFrom(this.userPublisher.getSalaryUsers(dto))
     }
 
     @Get(':id')
@@ -117,7 +117,7 @@ export class UserController {
         @Param('id', ParseUUIDPipe) id: string,
         @Query() dto: AdminGetUserDto
     ) {
-        return firstValueFrom(this.usersPublisher.getUser({ id, ...dto }))
+        return firstValueFrom(this.userPublisher.getUser({ id, ...dto }))
     }
 
     @Delete(':id/salary')
@@ -131,7 +131,7 @@ export class UserController {
         @Param('id', ParseUUIDPipe) userId: string,
         @Body() dto: AdminRemoveSalaryUserDto
     ) {
-        return firstValueFrom(this.usersPublisher.removeSalaryUser({ userId, ...dto }))
+        return firstValueFrom(this.userPublisher.removeSalaryUser({ userId, ...dto }))
     }
 
 
@@ -145,6 +145,6 @@ export class UserController {
     removeUser(
         @Param('id', ParseUUIDPipe) id: string
     ) {
-        return firstValueFrom(this.usersPublisher.removeUser({ id }))
+        return firstValueFrom(this.userPublisher.removeUser({ id }))
     }
 } 

@@ -1,13 +1,13 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { GetRolesDto, GetRolesResponse, UsersPublisher } from '@perfume-platform/common';
+import { GetRolesDto, GetRolesResponse, UserPublisher } from '@perfume-platform/common';
 import { firstValueFrom } from 'rxjs';
 
 @ApiTags('Роли')
 @Controller('roles')
 export class RoleController {
     constructor(
-        private readonly usersPublisher: UsersPublisher
+        private readonly userPublisher: UserPublisher
     ) { }
 
     @Get()
@@ -20,6 +20,6 @@ export class RoleController {
     getRoles(
         @Query() dto: GetRolesDto
     ) {
-        return firstValueFrom(this.usersPublisher.getRoles(dto))
+        return firstValueFrom(this.userPublisher.getRoles(dto))
     }
 }

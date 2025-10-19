@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { AddSalaryUserDto, ChangeRoleUserDto, CreateUserDto, EditUserDto, GetAllUsersDto, GetSalaryUsersDto, RemoveSalaryUserDto } from "@perfume-platform/common";
+import { AddSalaryUserDto,ChangeRoleUserDto,CreateUserDto,EditUserDto,GetAllUsersDto,GetSalaryUsersDto,RemoveSalaryUserDto } from "@perfume-platform/common";
 import { Repository } from "../base.repository";
-import { Prisma, PrismaService, User } from "../prisma.service";
-import { selectSalary, selectShort, selectUser } from "./users.select";
+import { Prisma,PrismaService,User } from "../prisma.service";
+import { selectSalary,selectShort,selectUser } from "./users.select";
 
 @Injectable()
 export class UsersRepository extends Repository {
@@ -12,13 +12,24 @@ export class UsersRepository extends Repository {
         super(prisma);
     }
 
+    getShortUserById(id: string) {
+        return this.prisma.user.findFirst({
+            select: {
+                id: true,
+                password: true,
+                login: true
+            },
+            where: {id }
+        })
+    }
+
     getUserByLogin(login: string) {
         return this.prisma.user.findFirst({
             select: {
                 id: true,
                 password: true
             },
-            where: { login }
+            where: {login }
         })
     }
 
@@ -52,6 +63,15 @@ export class UsersRepository extends Repository {
                 role: {
                     select: selectShort
                 }
+            }
+        })
+    }
+
+    changePasswordUser(id: string, password: string) {
+        return this.prisma.user.update({
+            where: {id},
+            data: {
+                password
             }
         })
     }

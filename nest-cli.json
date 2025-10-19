@@ -1,9 +1,10 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
-  "collection": "@nestjs/schematics",
+  "collection": "nota-schematics",
   "sourceRoot": "apps/api/client/src",
   "monorepo": true,
   "root": "apps/api/client",
+  "defaultProject": "admin",
   "compilerOptions": {
     "webpack": true
   },

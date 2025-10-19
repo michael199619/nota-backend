@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "gen:usecase": "nest g usecase --project",
     "build:common": "nest build common",
     "build:service": "ts-node scripts/service-runner.ts build",
     "start:service": "ts-node scripts/service-runner.ts start",
@@ -37,16 +38,17 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "env-var": "^7.5.0",
+    "inquirer": "^12.10.0",
     "kafkajs": "^2.2.4",
     "nats": "^2.29.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
+    "@angular-devkit/schematics-cli": "^20.3.6",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
     "@nestjs/cli": "^11.0.0",
-    "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
@@ -59,6 +61,7 @@
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
     "jest": "^30.0.0",
+    "nota-schematics": "file:./tools/schematics",
     "prettier": "^3.4.2",
     "prisma": "^6.16.1",
     "source-map-support": "^0.5.21",
@@ -67,7 +70,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.20.0"
   },
   "jest": {

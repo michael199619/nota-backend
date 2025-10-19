@@ -2,7 +2,7 @@ import { DynamicModule, Global, Module } from '@nestjs/common';
 import { ClientKafka, ClientNats, ClientsModule, Transport } from '@nestjs/microservices';
 import { TRANSPORT_USER_KAFKA, TRANSPORT_USER_NATS, TRASPORT_USER_GROUP } from './constants';
 import { IUserTransportOptions } from './user.interface';
-import { UsersPublisher } from './users.publisher';
+import { UserPublisher } from './users.publisher';
 
 @Global()
 @Module({})
@@ -59,22 +59,22 @@ export class UsersTransportModule {
 }
 
 @Module({})
-export class UsersPublisherModule {
+export class UserPublisherModule {
   static register(): DynamicModule {
 
     return {
-      module: UsersPublisherModule,
+      module: UserPublisherModule,
 
       providers: [
         {
-          provide: UsersPublisher,
+          provide: UserPublisher,
           useFactory: async (kafkaService: ClientKafka, natsService: ClientNats) => {
-            return new UsersPublisher(kafkaService, natsService)
+            return new UserPublisher(kafkaService, natsService)
           },
           inject: [TRANSPORT_USER_KAFKA, TRANSPORT_USER_NATS]
         },
       ],
-      exports: [UsersPublisher],
+      exports: [UserPublisher],
     };
   }
 }

@@ -1,0 +1,10 @@
+{
+    "name": "nota-schematics",
+    "version": "0.0.1",
+    "description": "Schematics for platform of perfumes",
+    "author": "Basov Michael",
+    "private": true,
+    "license": "UNLICENSED",
+    "main": "./src/usecase/index.js",
+    "schematics": "./collection.json"
+}

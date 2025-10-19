@@ -3,7 +3,7 @@ import { UserSubject, UserTopics, userTopics } from "./constants";
 import { AddSalaryUserDto, AddSalaryUserResponse, ChangePasswordUserDto, ChangePasswordUserResponse, ChangeRoleUserDto, ChangeRoleUserResponse, CreateUserDto, CreateUserResponse, EditUserDto, EditUserResponse, GetAllUsersDto, GetAllUsersResponse, GetRolesDto, GetRolesResponse, GetSalaryUserDto, GetSalaryUserResponse, GetSalaryUsersDto, GetSalaryUsersResponse, GetUserDto, GetUserResponse, LoginUserDto, LoginUserResponse, LogoutUserDto, LogoutUserResponse, RefreshTokenUserDto, RefreshTokenUserResponse, RemoveSalaryUserDto, RemoveSalaryUserResponse, RemoveUserDto, RemoveUserResponse } from "./dtos";
 import { IUserController } from "./user.interface";
 
-export class UsersPublisher implements IUserController {
+export class UserPublisher implements IUserController {
     constructor(
         private kafkaService: ClientKafka,
         private natsService: ClientNats

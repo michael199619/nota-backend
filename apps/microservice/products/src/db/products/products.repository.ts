@@ -10,8 +10,32 @@ export class ProductsRepository extends Repository {
         super(prisma);
     }
 
-    getProfile() {
+    createCollection() {
 
+    }
+
+    addProductForCollection() {
+
+    }
+
+    removeProductFromCollection() {
+
+    }
+
+    removeCollection() {
+
+    }
+
+    changeStatusOfCollection() {
+
+    }
+
+    getProductById(id: string) {
+
+    }
+
+    createProduct() {
+        
     }
 
 } 

@@ -1,12 +1,12 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { UsersPublisher } from '@perfume-platform/common';
+import { UserPublisher } from '@perfume-platform/common';
 
 @ApiTags('users')
 @Controller()
 export class UserController {
     constructor(
-        private readonly usersPublisher: UsersPublisher
+        private readonly userPublisher: UserPublisher
     ) {
 
     }
@@ -15,6 +15,6 @@ export class UserController {
     async userGetPerfume(
         @Param('id') id: string
     ) {
-        return this.usersPublisher.userGetPerfume({ id })
+        return this.userPublisher.userGetPerfume({ id })
     }
 } 

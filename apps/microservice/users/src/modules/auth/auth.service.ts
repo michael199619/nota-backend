@@ -1,5 +1,5 @@
 import { InjectRedis } from '@nestjs-modules/ioredis';
-import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException,Inject,Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordHasher } from '@perfume-platform/common';

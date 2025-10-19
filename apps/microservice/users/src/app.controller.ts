@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { AddSalaryUserDto, ChangeRoleUserDto, CreateUserDto, EditUserDto, GetAllUsersDto, GetRolesDto, GetSalaryUserDto, GetSalaryUsersDto, GetUserDto, LoginUserDto, RemoveSalaryUserDto, RemoveUserDto, UserSubject, UserTopics } from '@perfume-platform/common';
 import { AddSalaryUserUsecase } from './usecases/add-salary-user/add-salary-user.usecase';
+import { ChangePasswordUserUsecase } from './usecases/change-password-user/change-password-user.usecase';
 import { ChangeRoleUserUsecase } from './usecases/change-role-user/change-role-user.usecase';
 import { CreateUserUsecase } from './usecases/create-user/create-user.usecase';
 import { EditUserUsecase } from './usecases/edit-user/edit-user.usecase';
@@ -11,11 +11,13 @@ import { GetSalaryUserUsecase } from './usecases/get-salary-user/get-salary-user
 import { GetSalaryUsersUsecase } from './usecases/get-salary-users/get-salary-users.usecase';
 import { GetUserUsecase } from './usecases/get-user/get-user.usecase';
 import { LoginUserUsecase } from './usecases/login-user/login-user.usecase';
+import { LogoutUserUsecase } from './usecases/logout-user/logout-user.usecase';
+import { RefreshTokenUserUsecase } from './usecases/refresh-token-user/refresh-token-user.usecase';
 import { RemoveSalaryUserUsecase } from './usecases/remove-salary-user/remove-salary-user.usecase';
 import { RemoveUserUsecase } from './usecases/remove-user/remove-user.usecase';
 
 @Controller()
-export class AppController {
+export class AppController implements IUserController {
   constructor(
     private readonly addSalaryUserUsecase: AddSalaryUserUsecase,
     private readonly changeRoleUserUsecase: ChangeRoleUserUsecase,
@@ -28,7 +30,10 @@ export class AppController {
     private readonly getSalaryUserUsecase: GetSalaryUserUsecase,
     private readonly getSalaryUsersUsecase: GetSalaryUsersUsecase,
     private readonly getUserUsecase: GetUserUsecase,
-    private readonly loginUserUsecase: LoginUserUsecase
+    private readonly loginUserUsecase: LoginUserUsecase,
+    private readonly logoutUserUsecase: LogoutUserUsecase,
+    private readonly changePasswordUserUsecase: ChangePasswordUserUsecase,
+    private readonly refreshTokenUserUsecase: RefreshTokenUserUsecase
   ) { }
 
   @MessagePattern(UserTopics.addSalaryUser)
@@ -89,5 +94,20 @@ export class AppController {
   @MessagePattern(UserSubject.loginUser)
   async loginUser(dto: LoginUserDto) {
     return await this.loginUserUsecase.excecute(dto)
+  }
+
+  @MessagePattern(UserSubject.logoutUser)
+  async logoutUser(dto: LogoutUserDto) {
+    return await this.logoutUserUsecase.excecute(dto)
+  }
+
+  @MessagePattern(UserSubject.changePasswordUser)
+  async changePasswordUser(dto: ChangePasswordUserDto) {
+    return await this.changePasswordUserUsecase.excecute(dto)
+  }
+
+  @MessagePattern(UserSubject.refreshTokenUser)
+  async refreshTokenUser(dto: RefreshTokenUserDto) {
+    return await this.refreshTokenUserUsecase.excecute(dto)
   }
 } 

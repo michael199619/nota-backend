@@ -1,5 +1,4 @@
-import { PickType } from "@nestjs/swagger";
-import { GetUserDto } from "../get-user";
+import { RefreshTokenUserDto } from "../refresh-token-user";
 
-export class LogoutUserDto extends PickType(GetUserDto, ['id']) {
+export class LogoutUserDto extends RefreshTokenUserDto {
 }

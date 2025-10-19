@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { UsersPublisherModule } from '@perfume-platform/common';
+import { UserPublisherModule } from '@perfume-platform/common';
 import { RoleController } from './role.controller';
 
 @Module({
     imports: [
-        UsersPublisherModule.register(),
+        UserPublisherModule.register(),
     ],
     controllers: [RoleController]
 })

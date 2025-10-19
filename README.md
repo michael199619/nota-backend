@@ -64,19 +64,19 @@ controller
 @Controller()
 export class AppController {
     constructor(
-        private readonly usersPublisher: UsersPublisher
+        private readonly userPublisher: UserPublisher
     ) { }
 
     @Get(':id')
     async userGet(
         @Param('id') id: string
     ) {
-        return this.usersPublisher.userGet({ id })
+        return this.userPublisher.userGet({ id })
     }
 } 
 ```
 ### common
-UsersPublisher
+UserPublisher
 ```js
 import { ClientKafka, ClientNats } from "@nestjs/microservices";
 import { userTopics, UserTopics } from "./constants";
@@ -84,7 +84,7 @@ import { IUserGet, UserGetResponse } from "./dtos";
 import { IUserGetPerfume, userGetPerfumeResponse } from "./dtos/create";
 import { IUserController } from "./user.interface";
 
-export class UsersPublisher implements IUserController {
+export class UserPublisher implements IUserController {
     constructor(
         public kafkaService: ClientKafka,
         public natsService: ClientNats
@@ -116,13 +116,13 @@ export type IUserController = {
     userGet: (dto: IUserGet) => ControllerResponse<UserGetResponse>
 }
 ```
-UsersTransportModule - динамический модуль, который нужен для инициализации каждого транспорта для сервиса, здесь так же прописывается UsersPublisherModule
+UsersTransportModule - динамический модуль, который нужен для инициализации каждого транспорта для сервиса, здесь так же прописывается UserPublisherModule
 ```js
 import { DynamicModule, Global, Module } from '@nestjs/common';
 import { ClientKafka, ClientNats, ClientsModule, Transport } from '@nestjs/microservices';
 import { TRANSPORT_USER_KAFKA, TRANSPORT_USER_NATS, TRASPORT_USER_GROUP } from './constants';
 import { ITransportOptions } from './user.interface';
-import { UsersPublisher } from './users.publisher';
+import { UserPublisher } from './users.publisher';
 
 @Global()
 @Module({})
@@ -179,22 +179,22 @@ export class UsersTransportModule {
 }
 
 @Module({})
-export class UsersPublisherModule {
+export class UserPublisherModule {
   static register(): DynamicModule {
 
     return {
-      module: UsersPublisherModule,
+      module: UserPublisherModule,
 
       providers: [
         {
-          provide: UsersPublisher,
+          provide: UserPublisher,
           useFactory: async (kafkaService: ClientKafka, natsService: ClientNats) => {
-            return new UsersPublisher(kafkaService, natsService)
+            return new UserPublisher(kafkaService, natsService)
           },
           inject: [TRANSPORT_USER_KAFKA, TRANSPORT_USER_NATS]
         },
       ],
-      exports: [UsersPublisher],
+      exports: [UserPublisher],
     };
   }
 }
