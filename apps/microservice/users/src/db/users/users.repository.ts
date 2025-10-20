@@ -23,13 +23,27 @@ export class UsersRepository extends Repository {
         })
     }
 
-    getUserByLogin(login: string) {
-        return this.prisma.user.findFirst({
+    getUserByLoginOrEmailOrPhone(login: string, phone = login, email = login, excludeId?: string, tx?: Prisma.TransactionClient) {
+        return this.getContext(tx).user.findFirst({
             select: {
                 id: true,
-                password: true
+                password: true,
+                login: true,
+                phone: true,
+                email: true
             },
-            where: {login }
+            where: {
+                id: {
+                    not: excludeId
+                },
+                OR: [{
+                    ...this.getContains<User>('login', login),
+                }, {
+                    ...this.getContains<User>('phone', phone)
+                }, {
+                    ...this.getContains<User>('email', email)
+                }]
+            }
         })
     }
 
@@ -55,8 +69,8 @@ export class UsersRepository extends Repository {
         return this.paginationResponse({ data, total })
     }
 
-    getUserById(id: string) {
-        return this.prisma.user.findFirst({
+    getUserById(id: string, tx?: Prisma.TransactionClient) {
+        return this.getContext(tx).user.findFirst({
             where: { id },
             select: {
                 ...selectUser,
@@ -76,8 +90,8 @@ export class UsersRepository extends Repository {
         })
     }
 
-    createUser(data: CreateUserDto) {
-        return this.prisma.user.create({
+    createUser(data: CreateUserDto, tx?: Prisma.TransactionClient) {
+        return this.getContext(tx).user.create({
             data,
             select: {
                 ...selectUser,
@@ -88,8 +102,8 @@ export class UsersRepository extends Repository {
         })
     }
 
-    editUser({ id, ...data }: EditUserDto) {
-        return this.prisma.user.update({
+    editUser({ id, ...data }: EditUserDto, tx?: Prisma.TransactionClient) {
+        return this.getContext(tx).user.update({
             where: { id },
             data,
             select: {

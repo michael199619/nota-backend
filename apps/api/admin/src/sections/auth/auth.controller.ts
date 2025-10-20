@@ -67,7 +67,6 @@ export class AuthController {
     }
 
     @Post('refresh-token')
-    @UseGuards(AuthGuard)
     @ApiOperation({
         description: 'Обновить токен',
     })

@@ -20,8 +20,8 @@ export class AuthService {
         return `auth:${this.options.apiType}:refresh:${userId}:${jti}`;
     }
 
-    getPayloadFromToken<T extends object>(token: string): Promise<T>{
-        return this.jwt.verifyAsync<T>(token);
+    getPayloadFromToken(token: string): Promise<RefreshPayload>{
+        return this.jwt.verifyAsync<RefreshPayload>(token);
     }
 
     public async verify(password: string, hash: string) {
@@ -46,7 +46,7 @@ export class AuthService {
         let payload: RefreshPayload;
 
         try {
-            payload = await this.getPayloadFromToken<RefreshPayload>(refreshToken);
+            payload = await this.getPayloadFromToken(refreshToken);
 
             if (payload.sub !== userId) {
                 throw new ForbiddenException();
@@ -83,7 +83,7 @@ export class AuthService {
 
     async logout(userId: string, refreshToken: string) {
         try {
-            const payload = await this.getPayloadFromToken<RefreshPayload>(refreshToken);
+            const payload = await this.getPayloadFromToken(refreshToken);
 
             if (payload.sub !== userId) {
                 return;

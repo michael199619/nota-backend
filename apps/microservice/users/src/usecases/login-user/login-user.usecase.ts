@@ -16,7 +16,7 @@ export class LoginUserUsecase extends Usecase<IUserController['loginUser']> {
     }
 
     async handler(dto: LoginUserDto): Promise<LoginUserResponse> {
-        const user = await this.usersRepository.getUserByLogin(dto.login);
+        const user = await this.usersRepository.getUserByLoginOrEmailOrPhone(dto.login);
 
         if (!user) {
             throw new ForbiddenException();

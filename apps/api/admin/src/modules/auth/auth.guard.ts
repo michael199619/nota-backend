@@ -21,15 +21,21 @@ export class AuthGuard implements CanActivate {
         return false;
       }
 
-      const tokenPayload = await this.authService.getPayloadFromToken<{id: string}>(token);
+      const tokenPayload = await this.authService.getPayloadFromToken(token);
 
       if (!tokenPayload) {
         return false;
       }
 
+      // фронт сам определяет время токена и рефрешает до истечения времени
+      const now = Math.floor(+new Date() / 1000);
+      if ((tokenPayload.exp || 0) < now) {
+        return false;
+      }
+
       const user = await firstValueFrom(
         this.usersPublisher.getUser({
-          id: tokenPayload.id
+          id: tokenPayload.sub
         }),
       );
 

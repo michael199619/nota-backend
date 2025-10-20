@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { GetRolesDto } from "@perfume-platform/common";
 import { Repository } from "../base.repository";
-import { Prisma, PrismaService, Role } from "../prisma.service";
+import { Prisma,PrismaService,Role } from "../prisma.service";
 import { selectShort } from "../users/users.select";
 
 @Injectable()
@@ -27,5 +27,12 @@ export class RolesRepository extends Repository {
         ]);
 
         return this.paginationResponse({ data, total })
+    }
+
+    getRoleById(id: string, tx?: Prisma.TransactionClient) {
+        return this.getContext(tx).role.findFirst({
+            select: selectShort,
+            where: {id}
+        })
     }
 }
