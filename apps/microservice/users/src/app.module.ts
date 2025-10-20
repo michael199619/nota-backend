@@ -40,7 +40,6 @@ import { RemoveUserModule } from './usecases/remove-user/remove-user.module';
         }
       },
     }),
-
     AddSalaryUserModule,
     ChangeRoleUserModule,
     CreateUserModule,

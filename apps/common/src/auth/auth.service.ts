@@ -1,52 +1,52 @@
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import { ForbiddenException,Inject,Injectable } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordHasher } from '@perfume-platform/common';
 import { randomUUID } from 'crypto';
 import Redis from 'ioredis';
-import { UsersRepository } from '../../db/users/users.repository';
-import { jwtConfig } from '../config/config';
-import { RefreshPayload } from './auth.interface';
+import { AUTH_OPTIONS } from './auth.constants';
+import { AuthOptions,RefreshPayload } from './auth.interface';
 
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly usersRepository: UsersRepository,
         private readonly jwt: JwtService,
-        @Inject(jwtConfig.KEY)
-        private readonly config: ConfigType<typeof jwtConfig>,
+        @Inject(AUTH_OPTIONS) private readonly options: AuthOptions,
         @InjectRedis() private readonly redis: Redis
     ) {
     }
 
     private refreshKey(userId: string, jti: string) {
-        return `auth:user:refresh:${userId}:${jti}`;
+        return `auth:${this.options.apiType}:refresh:${userId}:${jti}`;
     }
 
-    async login(login: string, password: string) {
-        const user = await this.usersRepository.getUserByLogin(login);
+    getPayloadFromToken<T extends object>(token: string): Promise<T>{
+        return this.jwt.verifyAsync<T>(token);
+    }
 
-        if (!user) {
+    public async verify(password: string, hash: string) {
+        if (!await PasswordHasher.verify(password, hash)) {
             throw new ForbiddenException();
         }
+    } 
 
-        if (!await PasswordHasher.verify(password, user.password)) {
-            throw new ForbiddenException();
-        }
+    private getHashPassword(token: string) {
+        return PasswordHasher.getHashPassword(token);
+    }
 
-        const { accessToken, refreshToken, payload } = await this.signTokens(user.id);
-        await this.saveRefreshHash(user.id, payload.jti, refreshToken, payload.exp!);
-        return { accessToken, refreshToken };
+    async login(id: string, password: string, hash: string) {
+        await this.verify(password, hash);
+
+        const { accessToken, refreshToken, payload } = await this.signTokens(id);
+        await this.saveRefreshHash(id, payload.jti, refreshToken, payload.exp!);
+        return { accessToken, refreshToken, userId: id };
     }
 
     async refresh(userId: string, refreshToken: string) {
         let payload: RefreshPayload;
 
         try {
-            payload = await this.jwt.verifyAsync<RefreshPayload>(refreshToken, {
-                secret: this.config.tokenRefresh,
-            });
+            payload = await this.getPayloadFromToken<RefreshPayload>(refreshToken);
 
             if (payload.sub !== userId) {
                 throw new ForbiddenException();
@@ -62,9 +62,11 @@ export class AuthService {
             throw new ForbiddenException();
         }
 
-        if (!await PasswordHasher.verify(refreshToken, storedHash)) {
+        try {
+            await PasswordHasher.verify(refreshToken, storedHash)
+        } catch(e) {
             await this.redis.del(key);
-            throw new ForbiddenException();
+            throw e
         }
 
         await this.redis.del(key);
@@ -76,14 +78,12 @@ export class AuthService {
         } = await this.signTokens(userId);
         await this.saveRefreshHash(userId, newPayload.jti, newRefresh, newPayload.exp!);
 
-        return { accessToken, refreshToken: newRefresh };
+        return { accessToken, refreshToken: newRefresh, userId };
     }
 
     async logout(userId: string, refreshToken: string) {
         try {
-            const payload = await this.jwt.verifyAsync<RefreshPayload>(refreshToken, {
-                secret: this.config.tokenRefresh,
-            });
+            const payload = await this.getPayloadFromToken<RefreshPayload>(refreshToken);
 
             if (payload.sub !== userId) {
                 return;
@@ -106,14 +106,13 @@ export class AuthService {
 
         const [accessToken, refreshToken] = await Promise.all([
             this.jwt.signAsync({ sub: userId }, {
-                secret: this.config.tokenAccess,
-                expiresIn: this.config.accessExpiresIn,
+                expiresIn: this.options.accessExpiresIn,
             }),
             this.jwt.signAsync(payload, {
-                secret: this.config.tokenRefresh,
-                expiresIn: this.config.refreshExpiresIn,
+                expiresIn: this.options.refreshExpiresIn,
             }),
         ]);
+
 
         const decoded = this.jwt.decode<RefreshPayload>(refreshToken);
         payload.exp = decoded?.exp;
@@ -122,7 +121,7 @@ export class AuthService {
     }
 
     private async saveRefreshHash(userId: string, jti: string, token: string, exp: number) {
-        const hash = await PasswordHasher.getHashPassword(token);
+        const hash = await this.getHashPassword(token)
         const ttlSec = Math.max(1, exp - Math.floor(Date.now() / 1000));
         const key = this.refreshKey(userId, jti);
         await this.redis.set(key, hash, 'EX', ttlSec);

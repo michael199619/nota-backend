@@ -1,6 +1,5 @@
 import { HttpStatus,Injectable } from '@nestjs/common';
-import { IUserController,LogoutUserDto,LogoutUserResponse,Usecase } from "@perfume-platform/common";
-import { AuthService } from '../../modules/auth/auth.service';
+import { AuthService,IUserController,LogoutUserDto,LogoutUserResponse,Usecase } from "@perfume-platform/common";
 
 @Injectable()
 export class LogoutUserUsecase extends Usecase<IUserController['logoutUser']>{

@@ -15,3 +15,7 @@ export abstract class Usecase<func extends (...args: any[]) => any> {
         }
     }
 }
+
+export const getTokenFromBase64 = (token: string) => {
+    return Buffer.from(token, 'base64').toString('utf-8');
+}

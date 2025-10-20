@@ -1,7 +1,8 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder,SwaggerModule } from '@nestjs/swagger';
 import { ExFilter } from '@perfume-platform/common';
+import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { SERVICE_ID } from './constants';
 
@@ -9,6 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalFilters(new ExFilter());
+  app.use(cookieParser());
 
   app.useGlobalPipes(new ValidationPipe({
     transform: true,

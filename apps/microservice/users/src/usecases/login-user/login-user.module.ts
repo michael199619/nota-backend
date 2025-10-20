@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from '../../modules/auth/auth.module';
+import { PrismaModule } from '../../db/prisma.module';
+import { AuthUserModule } from '../../modules/auth/auth.module';
 import { LoginUserUsecase } from './login-user.usecase';
 
 @Module({
-    imports: [AuthModule],
+    imports: [AuthUserModule, PrismaModule],
     providers: [LoginUserUsecase],
     exports: [LoginUserUsecase],
 })

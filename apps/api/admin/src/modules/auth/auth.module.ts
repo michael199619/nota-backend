@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import { ApiType,AuthModule,AuthType } from '@perfume-platform/common';
+import { ApiType,AuthModule,AuthType,UserPublisherModule } from '@perfume-platform/common';
 import { jwtConfig } from '../config/config';
 import { ConfigurationModule } from '../config/config.module';
+import { AuthGuard } from './auth.guard';
 
 @Module({
     imports: [
@@ -12,12 +13,15 @@ import { ConfigurationModule } from '../config/config.module';
             useFactory(config: ConfigType<typeof jwtConfig>) {
                 return {
                     ...config,
-                    type: AuthType.MICROSERVICE,
+                    type: AuthType.API,
                     apiType: ApiType.USER,
                 }
-            }
+            },
+            
         }),
+        UserPublisherModule.register(),
     ],
-    exports: [AuthModule]
-})
+    providers: [AuthGuard],
+    exports: [AuthGuard, AuthModule]
+}) 
 export class AuthUserModule { }

@@ -1,11 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { IUserController, LoginUserDto, LoginUserResponse, Usecase } from "@perfume-platform/common";
-import { AuthService } from "../../modules/auth/auth.service";
+import { ForbiddenException,Injectable } from "@nestjs/common";
+import { AuthService,IUserController,LoginUserDto,LoginUserResponse,Usecase } from "@perfume-platform/common";
+import { UsersRepository } from "../../db/users/users.repository";
 
 @Injectable()
 export class LoginUserUsecase extends Usecase<IUserController['loginUser']> {
     constructor(
-        private readonly authService: AuthService
+        private readonly authService: AuthService,
+        private readonly usersRepository: UsersRepository
     ) {
         super()
     }
@@ -15,6 +16,12 @@ export class LoginUserUsecase extends Usecase<IUserController['loginUser']> {
     }
 
     async handler(dto: LoginUserDto): Promise<LoginUserResponse> {
-        return await this.authService.login(dto.login, dto.password)
+        const user = await this.usersRepository.getUserByLogin(dto.login);
+
+        if (!user) {
+            throw new ForbiddenException();
+        }
+
+        return await this.authService.login(user.id, dto.password, user.password)
     }
 }

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IUserController,RefreshTokenUserDto,RefreshTokenUserResponse,Usecase } from "@perfume-platform/common";
-import { AuthService } from '../../modules/auth/auth.service';
+import { AuthService,IUserController,RefreshTokenUserDto,RefreshTokenUserResponse,Usecase } from "@perfume-platform/common";
 
 @Injectable()
 export class RefreshTokenUserUsecase extends Usecase<IUserController['refreshTokenUser']>{

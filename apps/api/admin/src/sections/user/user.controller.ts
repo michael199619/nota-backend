@@ -1,9 +1,11 @@
-import { Body,Controller,Delete,Get,Param,ParseUUIDPipe,Post,Put,Query } from '@nestjs/common';
+import { Body,Controller,Delete,Get,Param,ParseUUIDPipe,Post,Put,Query,UseGuards } from '@nestjs/common';
 import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
 import { AddSalaryUserResponse,ChangeRoleUserResponse,CreateUserDto,CreateUserResponse,EditUserResponse,GetAllUsersDto,GetAllUsersResponse,GetSalaryUserResponse,GetSalaryUsersDto,GetSalaryUsersResponse,GetUserResponse,OrderPublisher,RemoveSalaryUserResponse,RemoveUserResponse,UserPublisher } from '@perfume-platform/common';
 import { firstValueFrom } from 'rxjs';
+import { AuthGuard } from '../../modules/auth/auth.guard';
 import { AdminAddSalaryUserDto,AdminChangeRoleUserDto,AdminEditUserDto,AdminGetSalaryUserDto,AdminGetUserDto,AdminRemoveSalaryUserDto } from './user.dto';
 @ApiTags('Пользователи')
+@UseGuards(AuthGuard)
 @Controller('users')
 export class UserController {
     constructor(

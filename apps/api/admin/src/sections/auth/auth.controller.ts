@@ -1,14 +1,17 @@
-import { Body,Controller,Post,Put } from '@nestjs/common';
+import { Body,Controller,Post,Put,UseGuards } from '@nestjs/common';
 import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
-import { ChangePasswordUserDto,ChangePasswordUserResponse,LoginUserDto,LoginUserResponse,LogoutUserDto,LogoutUserResponse,RefreshTokenUserDto,RefreshTokenUserResponse,UserPublisher } from '@perfume-platform/common';
+import { ChangePasswordUserResponse,ContextService,LoginUserDto,LoginUserResponse,LogoutUserResponse,RefreshTokenUserResponse,UserPublisher } from '@perfume-platform/common';
 import { firstValueFrom } from 'rxjs';
+import { AuthGuard } from '../../modules/auth/auth.guard';
+import { AdminChangePasswordUserDto } from './auth.dto';
 
 @ApiTags('Авторизация')
 @Controller('auth')
 export class AuthController {
     constructor(
-        private readonly userPublisher: UserPublisher
-    ) { }
+        private readonly userPublisher: UserPublisher,
+        private readonly ctx: ContextService
+    ) {}
 
     @Post()
     @ApiOperation({
@@ -17,23 +20,29 @@ export class AuthController {
     @ApiResponse({
         type: LoginUserResponse
     })
-    getRoles(
+    async loginUser(
         @Body() dto: LoginUserDto
     ) {
-        return firstValueFrom(this.userPublisher.loginUser(dto))
+        const login = await firstValueFrom(this.userPublisher.loginUser(dto));   console.log(login)
+        this.ctx.setTokens(login)
+        return login;
     }
 
+    @UseGuards(AuthGuard)
     @Post('logout')
     @ApiOperation({
-      description: '',
+      description: 'Выход',
     })
-    @ApiResponse({
-      type: LogoutUserResponse
-    })
-    logoutUser(
-      @Body() dto: LogoutUserDto
-    ) {
-      return firstValueFrom(this.userPublisher.logoutUser(dto))
+    @ApiResponse({type: LogoutUserResponse})
+    async logoutUser() {
+      const res = await firstValueFrom(this.userPublisher.logoutUser({
+        id: this.ctx.user.id,
+        refreshToken: this.ctx.refreshToken
+      }));
+
+      this.ctx.removeTokens();
+
+      return res;
     }
 
     @Put('change-password')
@@ -43,22 +52,36 @@ export class AuthController {
     @ApiResponse({
       type: ChangePasswordUserResponse
     })
-    changePasswordUser(
-      @Body() dto: ChangePasswordUserDto
+    @UseGuards(AuthGuard)
+    async changePasswordUser(
+      @Body() dto: AdminChangePasswordUserDto
     ) {
-      return firstValueFrom(this.userPublisher.changePasswordUser(dto))
+      const login = await firstValueFrom(this.userPublisher.changePasswordUser({
+        ...dto,
+        id: this.ctx.userId
+      }));
+
+      this.ctx.setTokens(login);
+
+      return login;
     }
 
     @Post('refresh-token')
+    @UseGuards(AuthGuard)
     @ApiOperation({
         description: 'Обновить токен',
     })
     @ApiResponse({
         type: RefreshTokenUserResponse
     })
-    refreshTokenUser(
-      @Body() dto: RefreshTokenUserDto
-    ) {
-        return firstValueFrom(this.userPublisher.refreshTokenUser(dto))
+    async refreshTokenUser() {
+        const login = await firstValueFrom(this.userPublisher.refreshTokenUser({
+          id: this.ctx.userId,
+          refreshToken: this.ctx.refreshToken
+        }));
+
+        this.ctx.setTokens(login);
+
+        return login
     }
 }
