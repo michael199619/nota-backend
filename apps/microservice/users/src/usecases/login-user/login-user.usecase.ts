@@ -1,5 +1,6 @@
 import { ForbiddenException,Injectable } from "@nestjs/common";
-import { AuthService,IUserController,LoginUserDto,LoginUserResponse,Usecase } from "@perfume-platform/common";
+import { AuthService,IUserController,LoginUserDto,LoginUserResponse,SearchPrisma,Usecase } from "@perfume-platform/common";
+import { User } from "../../db/prisma.service";
 import { UsersRepository } from "../../db/users/users.repository";
 
 @Injectable()
@@ -16,7 +17,13 @@ export class LoginUserUsecase extends Usecase<IUserController['loginUser']> {
     }
 
     async handler(dto: LoginUserDto): Promise<LoginUserResponse> {
-        const user = await this.usersRepository.getUserByLoginOrEmailOrPhone(dto.login);
+        const search: SearchPrisma<User, keyof User>[] = [
+            {key: 'phone', value: dto.login} , 
+            {key: 'email', value: dto.login},
+            {key: 'login', value: dto.login}, 
+        ]
+
+        const user = await this.usersRepository.getUserByLoginOrEmailOrPhone(search);
 
         if (!user) {
             throw new ForbiddenException();
