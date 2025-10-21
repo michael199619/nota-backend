@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { AddSalaryUserDto,ChangeRoleUserDto,CreateUserDto,EditUserDto,GetAllUsersDto,GetSalaryUsersDto,RemoveSalaryUserDto } from "@perfume-platform/common";
+import { AddSalaryUserDto,ChangeRoleUserDto,CreateUserDto,EditUserDto,GetAllUsersDto,GetSalaryUsersDto,RemoveSalaryUserDto,SearchPrisma } from "@perfume-platform/common";
 import { Repository } from "../base.repository";
 import { Prisma,PrismaService,User } from "../prisma.service";
 import { selectSalary,selectShort,selectUser } from "./users.select";
@@ -23,7 +23,21 @@ export class UsersRepository extends Repository {
         })
     }
 
-    getUserByLoginOrEmailOrPhone(login: string, phone = login, email = login, excludeId?: string, tx?: Prisma.TransactionClient) {
+    getUserByLoginOrEmailOrPhone(data: SearchPrisma<User, keyof User>[], excludeId?: string, tx?: Prisma.TransactionClient) {
+        const where: Prisma.UserWhereInput = {};
+
+        if (excludeId) {
+            where.id = {
+                not: excludeId
+            }
+        }
+
+        if(data.length) {
+            where.OR = data.map(({key, value}) => {
+                return {[key]: value, ...where};
+            });
+        }
+
         return this.getContext(tx).user.findFirst({
             select: {
                 id: true,
@@ -32,18 +46,7 @@ export class UsersRepository extends Repository {
                 phone: true,
                 email: true
             },
-            where: {
-                id: {
-                    not: excludeId
-                },
-                OR: [{
-                    ...this.getContains<User>('login', login),
-                }, {
-                    ...this.getContains<User>('phone', phone)
-                }, {
-                    ...this.getContains<User>('email', email)
-                }]
-            }
+            where
         })
     }
 

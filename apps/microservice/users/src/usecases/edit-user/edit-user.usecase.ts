@@ -1,5 +1,6 @@
 import { BadRequestException,Injectable,NotFoundException } from "@nestjs/common";
-import { EditUserDto,EditUserResponse,IUserController,Usecase } from "@perfume-platform/common";
+import { EditUserDto,EditUserResponse,IUserController,SearchPrisma,Usecase } from "@perfume-platform/common";
+import { User } from "../../db/prisma.service";
 import { UsersRepository } from "../../db/users/users.repository";
 
 @Injectable()
@@ -20,15 +21,18 @@ export class EditUserUsecase extends Usecase<IUserController['editUser']> {
                 throw new NotFoundException('user is not exists')
             }
 
-            const user = await this.userRepository.getUserByLoginOrEmailOrPhone('', dto.phone, dto.email, dto.id, tx)
+            const search: SearchPrisma<User, keyof User>[] = [
+                {key: 'phone', value: dto.phone} as SearchPrisma<User, 'phone'>, 
+                {key: 'email', value: dto.email} as SearchPrisma<User, 'email'>
+             ]
+
+            const user = await this.userRepository.getUserByLoginOrEmailOrPhone(search, dto.id, tx)
 
             if (user) {
-                const same: string = [
-                    {key: 'phone', value: dto.phone}, 
-                    {key: 'email', value: dto.email}, 
-                ].filter(e => user[e.key] === e.value)
-                .reduce<string>((prev, next) => (prev ? prev + ', '  : '') + next.key, '');
-                 throw new BadRequestException(`Key '${same}' have to unique`);          
+                const same: string = search.filter(e => user[e.key] === e.value)
+                  .reduce<string>((prev, next) => (prev ? prev + ', '  : '') + next.key, '');
+
+                throw new BadRequestException(`Key '${same}' have to unique`);          
             }
 
         return await this.userRepository.editUser(dto, tx);

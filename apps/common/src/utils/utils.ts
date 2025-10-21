@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 type Response<data> = Promise<data> | Observable<data> | data;
 export type ControllerResponse<data> = Promise<Response<data>> | Response<data>;
 
+export type SearchPrisma<Obj extends Record<string, any>, T extends keyof Obj> = {key: T, value: Obj[T]};
 export abstract class Usecase<func extends (...args: any[]) => any> {
     protected abstract handler(...args: Parameters<func>): ReturnType<func>
 
