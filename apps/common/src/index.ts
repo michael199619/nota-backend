@@ -7,4 +7,6 @@ export * from './auth';
 export * from './transport';
 export * from './utils';
 
+export * from './cache';
 export * from './context';
+export * from './sanitize';

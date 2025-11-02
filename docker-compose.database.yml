@@ -12,9 +12,26 @@ services:
       POSTGRES_USER: ${USERS_DB_USER:-postgres}
       POSTGRES_PASSWORD: ${USERS_DB_PASSWORD:-postgres}
     ports:
-      - "${USERS_DB_PORT:-5433}:5432"
+      - "${USERS_DB_PORT:-5440}:5432"
     volumes:
       - users_db_data:/var/lib/postgresql/data
+    networks:
+      - perfume_net
+
+  news-db:
+    image: postgres:15-alpine
+    container_name: perfume_news_db
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_DB: ${NEWS_DB_NAME:-news}
+      POSTGRES_USER: ${NEWS_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${NEWS_DB_PASSWORD:-postgres}
+    ports:
+      - "${NEWS_DB_PORT:-5433}:5432"
+    volumes:
+      - news_db_data:/var/lib/postgresql/data
     networks:
       - perfume_net
 
@@ -132,5 +149,6 @@ volumes:
   emails_db_data:
   bank_db_data:
   buyers_db_data:
+  news_db_data:
 
 
