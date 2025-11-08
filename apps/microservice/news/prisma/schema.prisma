@@ -29,6 +29,27 @@ model Article {
   status      ArticleStatus @default(DRAFT)
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
+  tags        TagItem[]
 
   @@map("article")
+}
+
+model TagItem {
+  tagId     String @map("tag_item") @db.Uuid
+  articleId String @map("article_id") @db.Uuid
+
+  article Article @relation(fields: [articleId], references: [id])
+  tag     Tag     @relation(fields: [tagId], references: [id])
+
+  @@id([tagId, articleId])
+  @@map("tag_item")
+}
+
+model Tag {
+  id   String @id @db.Uuid
+  name String @db.VarChar(255)
+
+  tags TagItem[]
+
+  @@map("tag")
 }

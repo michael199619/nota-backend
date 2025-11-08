@@ -22,6 +22,10 @@ export class MusicRepository extends Repository {
 
     }
 
+    getMusicById() {
+
+    }
+
     getMusics() {
 
     }

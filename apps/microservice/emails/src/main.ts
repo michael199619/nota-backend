@@ -34,7 +34,7 @@ async function bootstrap() {
         },
     });
 
-    await app.startAllMicroservices();
+    (await app.startAllMicroservices()).init();
 
     console.log(`Emails microservice is running`);
 }

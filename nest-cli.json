@@ -98,6 +98,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/microservice/users/tsconfig.app.json"
       }
+    },
+    "news": {
+      "type": "application",
+      "root": "apps/microservice/news",
+      "entryFile": "main",
+      "sourceRoot": "apps/microservice/news/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/microservice/news/tsconfig.app.json"
+      }
     }
   }
 }

@@ -1,9 +1,9 @@
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import { ForbiddenException,Inject,Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PasswordHasher } from '@perfume-platform/common';
 import { randomUUID } from 'crypto';
 import Redis from 'ioredis';
+import { PasswordHasher } from '../utils';
 import { AUTH_OPTIONS } from './auth.constants';
 import { AuthOptions,RefreshPayload } from './auth.interface';
 
@@ -16,55 +16,55 @@ export class AuthService {
     ) {
     }
 
-    private refreshKey(userId: string, jti: string) {
+    private refreshKey(userId: string,jti: string) {
         return `auth:${this.options.apiType}:refresh:${userId}:${jti}`;
     }
 
-    getPayloadFromToken(token: string): Promise<RefreshPayload>{
+    getPayloadFromToken(token: string): Promise<RefreshPayload> {
         return this.jwt.verifyAsync<RefreshPayload>(token);
     }
 
-    public async verify(password: string, hash: string) {
-        if (!await PasswordHasher.verify(password, hash)) {
+    public async verify(password: string,hash: string) {
+        if (!await PasswordHasher.verify(password,hash)) {
             throw new ForbiddenException();
         }
-    } 
+    }
 
     private getHashPassword(token: string) {
         return PasswordHasher.getHashPassword(token);
     }
 
-    async login(id: string, password: string, hash: string) {
-        await this.verify(password, hash);
+    async login(id: string,password: string,hash: string) {
+        await this.verify(password,hash);
 
-        const { accessToken, refreshToken, payload } = await this.signTokens(id);
-        await this.saveRefreshHash(id, payload.jti, refreshToken, payload.exp!);
-        return { accessToken, refreshToken, userId: id };
+        const { accessToken,refreshToken,payload }=await this.signTokens(id);
+        await this.saveRefreshHash(id,payload.jti,refreshToken,payload.exp!);
+        return { accessToken,refreshToken,userId: id };
     }
 
-    async refresh(userId: string, refreshToken: string) {
+    async refresh(userId: string,refreshToken: string) {
         let payload: RefreshPayload;
 
         try {
-            payload = await this.getPayloadFromToken(refreshToken);
+            payload=await this.getPayloadFromToken(refreshToken);
 
-            if (payload.sub !== userId) {
+            if (payload.sub!==userId) {
                 throw new ForbiddenException();
             }
         } catch {
             throw new ForbiddenException();
         }
 
-        const key = this.refreshKey(userId, payload.jti);
-        const storedHash = await this.redis.get(key);
+        const key=this.refreshKey(userId,payload.jti);
+        const storedHash=await this.redis.get(key);
 
         if (!storedHash) {
             throw new ForbiddenException();
         }
 
         try {
-            await PasswordHasher.verify(refreshToken, storedHash)
-        } catch(e) {
+            await PasswordHasher.verify(refreshToken,storedHash)
+        } catch (e) {
             await this.redis.del(key);
             throw e
         }
@@ -75,21 +75,21 @@ export class AuthService {
             accessToken,
             refreshToken: newRefresh,
             payload: newPayload
-        } = await this.signTokens(userId);
-        await this.saveRefreshHash(userId, newPayload.jti, newRefresh, newPayload.exp!);
+        }=await this.signTokens(userId);
+        await this.saveRefreshHash(userId,newPayload.jti,newRefresh,newPayload.exp!);
 
-        return { accessToken, refreshToken: newRefresh, userId };
+        return { accessToken,refreshToken: newRefresh,userId };
     }
 
-    async logout(userId: string, refreshToken: string) {
+    async logout(userId: string,refreshToken: string) {
         try {
-            const payload = await this.getPayloadFromToken(refreshToken);
+            const payload=await this.getPayloadFromToken(refreshToken);
 
-            if (payload.sub !== userId) {
+            if (payload.sub!==userId) {
                 return;
             };
 
-            await this.redis.del(this.refreshKey(userId, payload.jti));
+            await this.redis.del(this.refreshKey(userId,payload.jti));
         } catch {
             // токен мог быть уже невалиден — просто игнорируем
         }
@@ -101,29 +101,29 @@ export class AuthService {
     }
 
     private async signTokens(userId: string) {
-        const jti = randomUUID();
-        const payload: RefreshPayload = { sub: userId, jti };
+        const jti=randomUUID();
+        const payload: RefreshPayload={ sub: userId,jti };
 
-        const [accessToken, refreshToken] = await Promise.all([
-            this.jwt.signAsync({ sub: userId }, {
+        const [accessToken,refreshToken]=await Promise.all([
+            this.jwt.signAsync({ sub: userId },{
                 expiresIn: this.options.accessExpiresIn,
             }),
-            this.jwt.signAsync(payload, {
+            this.jwt.signAsync(payload,{
                 expiresIn: this.options.refreshExpiresIn,
             }),
         ]);
 
 
-        const decoded = this.jwt.decode<RefreshPayload>(refreshToken);
-        payload.exp = decoded?.exp;
+        const decoded=this.jwt.decode<RefreshPayload>(refreshToken);
+        payload.exp=decoded?.exp;
 
-        return { accessToken, refreshToken, payload };
+        return { accessToken,refreshToken,payload };
     }
 
-    private async saveRefreshHash(userId: string, jti: string, token: string, exp: number) {
-        const hash = await this.getHashPassword(token)
-        const ttlSec = Math.max(1, exp - Math.floor(Date.now() / 1000));
-        const key = this.refreshKey(userId, jti);
-        await this.redis.set(key, hash, 'EX', ttlSec);
+    private async saveRefreshHash(userId: string,jti: string,token: string,exp: number) {
+        const hash=await this.getHashPassword(token)
+        const ttlSec=Math.max(1,exp-Math.floor(Date.now()/1000));
+        const key=this.refreshKey(userId,jti);
+        await this.redis.set(key,hash,'EX',ttlSec);
     }
 }

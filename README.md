@@ -16,6 +16,7 @@ apps/
    ├── micro-products/  - Каталог парфюмерии
    ├── micro-orders/    - Заказы
    ├── micro-bank/      - Платежи
+   ├── micro-news/      - Новости
    ├── micro-buyers/    - Покупатели
    ├── micro-emails/    - Уведомления
    ├── micro-storage/   - Файлы

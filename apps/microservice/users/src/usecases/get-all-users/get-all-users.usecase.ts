@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { ControllerResponse, GetAllUsersDto, GetAllUsersResponse, IUserController, Usecase } from "@perfume-platform/common";
+import { GetAllUsersDto,GetAllUsersResponse,IUserController,Usecase } from "@perfume-platform/common";
 import { UsersRepository } from "../../db/users/users.repository";
 
 @Injectable()
@@ -10,7 +10,7 @@ export class GetAllUsersUsecase extends Usecase<IUserController['getAllUsers']> 
         super()
     }
 
-    public excecute(dto: GetAllUsersDto): Promise<ControllerResponse<GetAllUsersResponse>> {
+    public excecute(dto: GetAllUsersDto) {
         return super.excecute(dto);
     }
 

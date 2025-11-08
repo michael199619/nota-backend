@@ -12,7 +12,6 @@ export class PrismaService extends prismaServiceFabric(
     super();
   }
 
-
   async seed() {
 
   }

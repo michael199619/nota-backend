@@ -1,5 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
+import { AddSalaryUserDto,ChangePasswordUserDto,ChangeRoleUserDto,CreateUserDto,EditUserDto,GetAllUsersDto,GetRolesDto,GetSalaryUserDto,GetSalaryUsersDto,GetUserDto,IUserController,LoginUserDto,LogoutUserDto,RefreshTokenUserDto,RemoveSalaryUserDto,RemoveUserDto,UserSubject,UserTopics } from '@perfume-platform/common';
 import { AddSalaryUserUsecase } from './usecases/add-salary-user/add-salary-user.usecase';
 import { ChangePasswordUserUsecase } from './usecases/change-password-user/change-password-user.usecase';
 import { ChangeRoleUserUsecase } from './usecases/change-role-user/change-role-user.usecase';
@@ -66,27 +67,27 @@ export class AppController implements IUserController {
     return await this.removeSalaryUserUsecase.excecute(dto)
   }
 
-  @MessagePattern(UserTopics.getAllUses)
+  @MessagePattern(UserSubject.getAllUses)
   async getAllUsers(dto: GetAllUsersDto) {
     return await this.getAllUsersUsecase.excecute(dto)
   }
 
-  @MessagePattern(UserTopics.getRoles)
+  @MessagePattern(UserSubject.getRoles)
   async getRoles(dto: GetRolesDto) {
     return await this.getRolesUsecase.excecute(dto)
   }
 
-  @MessagePattern(UserTopics.getSalaryUser)
+  @MessagePattern(UserSubject.getSalaryUser)
   async getSalaryUser(dto: GetSalaryUserDto) {
     return await this.getSalaryUserUsecase.excecute(dto)
   }
 
-  @MessagePattern(UserTopics.getSalaryUsers)
+  @MessagePattern(UserSubject.getSalaryUsers)
   async getSalaryUsers(dto: GetSalaryUsersDto) {
     return await this.getSalaryUsersUsecase.excecute(dto)
   }
 
-  @MessagePattern(UserTopics.getUser)
+  @MessagePattern(UserSubject.getUser)
   async getUser(dto: GetUserDto) {
     return await this.getUserUsecase.excecute(dto)
   }

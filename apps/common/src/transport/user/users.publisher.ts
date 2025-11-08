@@ -32,23 +32,23 @@ export class UserPublisher implements IUserController {
     }
 
     getAllUsers(dto: GetAllUsersDto) {
-        return this.natsService.send<GetAllUsersResponse>(UserTopics.getAllUses, dto)
+        return this.natsService.send<GetAllUsersResponse>(UserSubject.getAllUses, dto)
     }
 
     getRoles(dto: GetRolesDto) {
-        return this.natsService.send<GetRolesResponse>(UserTopics.getRoles, dto)
+        return this.natsService.send<GetRolesResponse>(UserSubject.getRoles, dto)
     }
 
     getSalaryUser(dto: GetSalaryUserDto) {
-        return this.natsService.send<GetSalaryUserResponse>(UserTopics.getSalaryUser, dto)
+        return this.natsService.send<GetSalaryUserResponse>(UserSubject.getSalaryUser, dto)
     }
 
     getSalaryUsers(dto: GetSalaryUsersDto) {
-        return this.natsService.send<GetSalaryUsersResponse>(UserTopics.getSalaryUsers, dto)
+        return this.natsService.send<GetSalaryUsersResponse>(UserSubject.getSalaryUsers, dto)
     }
 
     getUser(dto: GetUserDto) {
-        return this.natsService.send<GetUserResponse>(UserTopics.getUser, dto)
+        return this.natsService.send<GetUserResponse>(UserSubject.getUser, dto)
     }
 
     removeSalaryUser(dto: RemoveSalaryUserDto) {

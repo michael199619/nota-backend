@@ -15,18 +15,17 @@ datasource db {
 enum MusicType {
   TRACK
   ALBUM
+
+  @@map("music_type")
 }
 
 enum ComponentLvl {
   TOP
   MIDDLE
-  BOTOM
+  BOTTOM
   ARRANGEMENT
-}
 
-enum Provider {
-  DROP
-  LITTER
+  @@map("component_lvl")
 }
 
 enum ComponentType {
@@ -34,112 +33,182 @@ enum ComponentType {
   NOTE_ETHEREAL
   ALCOHOL
   ETHEREAL
+
+  @@map("component_type")
 }
 
 enum Sex {
   MAN
   WOMEN
   UNISEX
+
+  @@map("sex")
 }
 
 enum ProductEntity {
   PERFUME
+
+  @@map("product_entity")
+}
+
+enum ComponentHistoryType {
+  ADD
+  CREATE
+  SPENT
+
+  @@map("component_history_type")
+}
+
+enum PerfumeStatus {
+  DRAFT
+  PUBLISH
+
+  @@map("perfume_status")
+}
+
+enum CollectionStatus {
+  DRAFT
+  PENDING
+  PUBLISH
+
+  @@map("collection_status")
 }
 
 model Track {
-  id           String  @id @db.Uuid
-  shortTrackId String  @db.Uuid
-  fullTrackId  String? @db.Uuid
+  id           String  @id @default(uuid()) @db.Uuid
+  shortTrackId String  @map("short_track_id") @db.Uuid
+  fullTrackId  String? @map("full_track_id") @db.Uuid
 
   musics Music[]
+
+  @@map("track")
 }
 
 model Music {
-  id      String    @id @db.Uuid
-  trackId String?   @db.Uuid
+  id      String    @id @default(uuid()) @db.Uuid
+  trackId String?   @map("track_id") @db.Uuid
   name    String    @db.VarChar(255)
   type    MusicType
 
   track   Track?    @relation(fields: [trackId], references: [id])
   product Product[]
+
+  @@map("music")
 }
 
 model Collection {
-  id          String @id @db.Uuid
-  name        String @db.VarChar(255)
-  description String @db.Text
+  id          String           @id @default(uuid()) @db.Uuid
+  name        String           @db.VarChar(255)
+  description String           @db.Text
+  status      CollectionStatus @default(DRAFT)
 
   items CollectionItem[]
+
+  @@map("collection")
 }
 
 model CollectionItem {
-  id           String   @id @db.Uuid
-  productId    String?  @db.Uuid
+  id           String   @id @default(uuid()) @db.Uuid
+  productId    String?  @unique @map("product_id") @db.Uuid
   description  String   @db.Text
-  collectionId String   @db.Uuid
+  collectionId String   @map("collection_id") @db.Uuid
   index        Int
-  imageIds     String[] @db.Uuid
+  imageIds     String[] @map("image_ids") @db.Uuid
 
-  collection Collection @relation(fields: [collectionId], references: [id])
-  product    Product?   @relation(fields: [productId], references: [id])
+  collection  Collection @relation(fields: [collectionId], references: [id])
+  product     Product?   @relation(fields: [productId], references: [id])
+  component   Component? @relation(fields: [componentId], references: [id])
+  componentId String?    @db.Uuid
 }
 
 model ComponentHistory {
-  id          String    @id @db.Uuid
-  isFinish    Boolean   @default(false)
-  receiptId   String?   @db.Uuid // чек может быть одинаковым для нескольких компонентов
-  createdAt   DateTime  @updatedAt
-  componentId String    @db.Uuid
-  component   Component @relation(fields: [componentId], references: [id])
+  id          String               @id @default(uuid()) @db.Uuid
+  receiptId   String?              @map("receipt_id") @db.Uuid // чек может быть одинаковым для нескольких компонентов
+  createdAt   DateTime             @updatedAt @map("created_id")
+  type        ComponentHistoryType @default(CREATE)
+  count       Decimal              @default(1)
+  componentId String               @map("component_id") @db.Uuid
+  component   Component            @relation(fields: [componentId], references: [id])
 }
 
+model Provider {
+  id      String  @id @default(uuid()) @db.Uuid
+  name    String  @db.VarChar(255)
+  address String? @db.VarChar(255)
+  site    String? @db.VarChar(255)
+
+  components Component[]
+
+  @@map("provider")
+}
+
+// при покупки мы ищем название конкретного компонента и провайдера
+// если его нет, то мы создаем новый, добавляя в историю CREATE, 
+// иначе добавляем к текущему, добавляя в историю ADD
 model Component {
-  id          String             @id @db.Uuid
-  name        String             @db.VarChar(255)
-  description String?            @db.Text
-  volume      Decimal
-  provider    Provider
-  type        ComponentType
-  history     ComponentHistory[]
+  id            String             @id @default(uuid()) @db.Uuid
+  name          String             @unique @db.VarChar(255)
+  description   String?            @db.Text
+  volume        Decimal
+  type          ComponentType      @default(ALCOHOL)
+  providerId    String             @map("provider_id") @db.Uuid
+  provider      Provider           @relation(fields: [providerId], references: [id])
+  histories     ComponentHistory[]
+  components    CollectionItem[]
+  ComponentItem ComponentItem[]
+
+  @@map("component")
 }
 
 model ComponentItem {
-  id          String       @id @db.Uuid
-  componentId String       @db.Uuid
+  id          String       @id @default(uuid()) @db.Uuid
+  componentId String       @map("component_id") @db.Uuid
+  component   Component    @relation(fields: [componentId], references: [id])
   lvl         ComponentLvl
-  value       Int
-  typeVolume  Provider
+  volume      Int
   index       Int
+  perfumeId   String       @map("perfume_id") @db.Uuid
+  perfume     Perfume      @relation(fields: [perfumeId], references: [id])
+
+  @@map("component_item")
 }
 
 model Perfume {
-  id                String        @id @db.Uuid
-  userId            String        @db.Uuid
-  sex               Sex           @default(UNISEX)
-  authorDescription String        @db.Text
-  ProductItem       ProductItem[]
+  id                String          @id @default(uuid()) @db.Uuid
+  authorId          String          @map("author_id") @db.Uuid
+  sex               Sex             @default(UNISEX)
+  authorDescription String          @map("author_description") @db.Text
+  status            PerfumeStatus   @default(DRAFT)
+  productItems      ProductItem[]
+  componentsItems   ComponentItem[]
+
+  @@map("perfume")
 }
 
 model Product {
-  id           String   @id @db.Uuid
-  isCollection Boolean?
-  musicId      String   @db.Uuid
-  currentPrice Decimal
-  name         String   @db.VarChar(255)
-  description  String   @db.VarChar(255)
+  id           String  @id @default(uuid()) @db.Uuid
+  isCollection Boolean @default(true) @map("is_collection")
+  musicId      String  @map("music_id") @db.Uuid
+  currentPrice Decimal @map("current_price")
+  name         String  @db.VarChar(255)
+  description  String  @db.VarChar(255)
 
-  music          Music            @relation(fields: [musicId], references: [id])
-  items          ProductItem[]
-  CollectionItem CollectionItem[]
+  music          Music           @relation(fields: [musicId], references: [id])
+  itemId         String          @unique @map("item_id") @db.Uuid
+  item           ProductItem     @relation(fields: [itemId], references: [id])
+  collectionItem CollectionItem?
+
+  @@map("product")
 }
 
 model ProductItem {
-  id        String        @id @db.Uuid
+  id        String        @id @default(uuid()) @db.Uuid
   entity    ProductEntity @default(PERFUME)
-  perfumeId String?       @db.Uuid
+  perfumeId String?       @map("perfume_id") @db.Uuid
   count     Decimal
-  productId String        @db.Uuid
 
-  product Product  @relation(fields: [productId], references: [id])
+  product Product?
   perfume Perfume? @relation(fields: [perfumeId], references: [id])
+
+  @@map("product_item")
 }
