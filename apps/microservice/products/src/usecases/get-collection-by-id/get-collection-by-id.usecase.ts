@@ -23,8 +23,10 @@ export class GetCollectionByIdUsecase extends Usecase<IProductsController['getCo
 
     return {
       id: collection.id,
-      createdAt: (collection as any).createdAt??new Date(),
-      updatedAt: (collection as any).updatedAt??new Date(),
+      name: collection.name,
+      description: collection.description,
+      status: collection.status,
+      imageIds: collection.imageIds,
     };
   }
 }

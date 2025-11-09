@@ -15,12 +15,5 @@ export class ChangeStatusOfCollectionResponse {
         description: 'Статус коллекции',
         example: CollectionStatus.PUBLISH
     })
-    status: CollectionStatus;
-
-    @ApiProperty({
-        type: Date,
-        description: 'Дата обновления',
-        example: new Date()
-    })
-    updatedAt: Date;
+    status: `${CollectionStatus}`;
 }

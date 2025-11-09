@@ -1,11 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsUUID } from "class-validator";
+import { randomUUID } from "crypto";
 
 export class RemoveProviderDto {
     @ApiProperty({
         type: String,
         description: 'Идентификатор поставщика',
-        example: '550e8400-e29b-41d4-a716-446655440000'
+        example: randomUUID()
     })
     @IsUUID()
     id: string;

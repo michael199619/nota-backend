@@ -17,7 +17,7 @@ import {
     GetCollectionsDto,GetCollectionsResponse,
     GetComponentsDto,GetComponentsResponse,
     GetMusicByIdDto,GetMusicByIdResponse,
-    GetMusicsDto,
+    GetMusicsDto,GetMusicsResponse,
     GetPerfumeByIdDto,GetPerfumeByIdResponse,
     GetPerfumesDto,GetPerfumesResponse,
     GetProductByIdDto,GetProductByIdResponse,
@@ -106,7 +106,7 @@ export class ProductsPublisher implements IProductsController {
     }
 
     getMusics(dto: GetMusicsDto) {
-        return this.natsService.send<GetMusicByIdResponse>(ProductsSubject.getMusics,dto)
+        return this.natsService.send<GetMusicsResponse>(ProductsSubject.getMusics,dto)
     }
 
     removeProductFromCollection(dto: RemoveProductFromCollectionDto) {

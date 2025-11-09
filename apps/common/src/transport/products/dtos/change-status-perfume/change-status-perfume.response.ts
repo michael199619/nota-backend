@@ -15,12 +15,5 @@ export class ChangeStatusPerfumeResponse {
         description: 'Статус парфюма',
         example: PerfumeStatus.PUBLISH
     })
-    status: PerfumeStatus;
-
-    @ApiProperty({
-        type: Date,
-        description: 'Дата обновления',
-        example: new Date()
-    })
-    updatedAt: Date;
+    status: `${PerfumeStatus}`;
 }

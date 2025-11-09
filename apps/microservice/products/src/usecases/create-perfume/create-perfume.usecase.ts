@@ -20,10 +20,9 @@ export class CreatePerfumeUsecase extends Usecase<IProductsController['createPer
     return {
       id: perfume.id,
       authorId: perfume.authorId,
-      sex: perfume.sex as any,
+      sex: perfume.sex,
       authorDescription: perfume.authorDescription,
-      status: perfume.status as any,
-      createdAt: (perfume as any).createdAt??new Date(),
+      status: perfume.status,
       components: dto.components,
     };
   }

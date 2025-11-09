@@ -14,14 +14,26 @@ export class ProductsRepository extends Repository {
 
     async getCollections(dto: GetCollectionsDto,tx?: Prisma.TransactionClient) {
         const { skip,take }=this.preparePagination(dto)
+        const where=dto.search? {
+            name: {
+                contains: dto.search
+            }
+        }:undefined;
 
         const [data,total]=await Promise.all([
             this.getContext(tx).collection.findMany({
-                where: {},
+                select: {
+                    name: true,
+                    description: true,
+                    id: true,
+                    imageIds: true,
+                    status: true
+                },
+                where,
                 take,
                 skip
             }),
-            this.getContext(tx).collection.count()
+            this.getContext(tx).collection.count({ where })
         ]);
 
         return this.paginationResponse({ data,total,take })
@@ -60,18 +72,19 @@ export class ProductsRepository extends Repository {
         tx?: Prisma.TransactionClient,
     ) {
         return this.getContext(tx).collectionItem.create({
-
             data: {
                 productId: dto.productId,
                 collectionId: dto.collectionId,
-                description: dto.description,
                 index: dto.index,
                 imageIds: dto.imageIds,
             },
         });
     }
 
-    async removeProductFromCollection(dto: RemoveProductFromCollectionDto,tx?: Prisma.TransactionClient) {
+    async removeProductFromCollection(
+        dto: RemoveProductFromCollectionDto,
+        tx?: Prisma.TransactionClient
+    ) {
         return this.getContext(tx).collectionItem.delete({
             where: { collectionId: dto.collectionId,id: dto.collectionItemId },
         });
@@ -161,7 +174,10 @@ export class ProductsRepository extends Repository {
 
     getMusicById(id: string,tx?: Prisma.TransactionClient) {
         return this.getContext(tx).music.findUnique({
-            where: { id }
+            where: { id },
+            include: {
+                track: true
+            }
         });
     }
 
@@ -188,6 +204,12 @@ export class ProductsRepository extends Repository {
 
         const [data,total]=await Promise.all([
             this.getContext(tx).perfume.findMany({
+                select: {
+                    id: true,
+                    sex: true,
+                    authorId: true,
+                    status: true
+                },
                 where,
                 take,
                 skip
@@ -241,7 +263,7 @@ export class ProductsRepository extends Repository {
                             componentId: component.id,
                             lvl: component.lvl,
                             volume: component.volume,
-                            index: +component.index
+                            index: component.index
                         }))
                     }
                 }
@@ -313,7 +335,7 @@ export class ProductsRepository extends Repository {
 
     // Component methods
     async getComponents(dto: GetComponentsDto,tx?: Prisma.TransactionClient) {
-        const { skip,take }=this.preparePagination({ page: dto.page,limit: dto.limit });
+        const { skip,take }=this.preparePagination({ page: dto.page??1,limit: dto.limit??10 });
         const where=dto.search? {
             name: {
                 contains: dto.search

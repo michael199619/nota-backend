@@ -23,7 +23,7 @@ export class CreatePerfumeResponse {
     description: 'Пол для парфюма',
     example: Sex.UNISEX
   })
-  sex: Sex;
+  sex: `${Sex}`;
 
   @ApiProperty({
     type: String,
@@ -37,17 +37,11 @@ export class CreatePerfumeResponse {
     description: 'Статус парфюма',
     example: PerfumeStatus.DRAFT
   })
-  status: PerfumeStatus;
-
-  @ApiProperty({
-    type: Date,
-    description: 'Дата создания',
-    example: new Date()
-  })
-  createdAt: Date;
+  status: `${PerfumeStatus}`;
 
   @ApiProperty({
     type: CreatePerfumeComponent,
+    isArray: true,
     description: 'Компоненты в парфюме'
   })
   components: CreatePerfumeComponent[];

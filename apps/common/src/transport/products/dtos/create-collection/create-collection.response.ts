@@ -29,12 +29,5 @@ export class CreateCollectionResponse {
         description: 'Статус коллекции',
         example: CollectionStatus.DRAFT
     })
-    status: CollectionStatus;
-
-    @ApiProperty({
-        type: Date,
-        description: 'Дата создания',
-        example: '2024-01-15T10:30:00Z'
-    })
-    createdAt: Date;
+    status: `${CollectionStatus}`;
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus,Injectable } from '@nestjs/common';
 import { IProductsController,RemoveMusicDto,RemoveMusicResponse,Usecase } from "@perfume-platform/common";
 import { ProductsRepository } from '../../db/products/products.repository';
 
@@ -15,11 +15,10 @@ export class RemoveMusicUsecase extends Usecase<IProductsController['removeMusic
   }
 
   public async handler(dto: RemoveMusicDto): Promise<RemoveMusicResponse> {
-    const removed=await this.productsRepository.removeMusic(dto.id);
+    await this.productsRepository.removeMusic(dto.id);
 
     return {
-      id: removed.id,
-      success: true,
+      status: HttpStatus.OK
     };
   }
 }

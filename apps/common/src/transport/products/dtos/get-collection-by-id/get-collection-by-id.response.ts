@@ -1,6 +1,43 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { randomUUID } from "crypto";
+import { CollectionStatus } from "../../constants";
 
+export class GetCollectionItem {
+    @ApiProperty({
+        type: String,
+        description: 'Идентификатор элемента коллекции',
+        example: randomUUID()
+    })
+    id: string;
+
+    @ApiProperty({
+        type: String,
+        description: 'Идентификатор продукта коллекции',
+        example: randomUUID()
+    })
+    productId?: string;
+
+    @ApiProperty({
+        type: String,
+        description: 'Имя продукта',
+        example: 'Glissando'
+    })
+    name?: string;
+
+    @ApiProperty({
+        type: Number,
+        description: 'Индекс элемента коллекции',
+        example: 1
+    })
+    index: number;
+
+    @ApiProperty({
+        type: String,
+        description: 'Массив идентификаторов на стор',
+        example: [randomUUID(),randomUUID()]
+    })
+    imageIds: string[];
+}
 export class GetCollectionByIdResponse {
     @ApiProperty({
         type: String,
@@ -17,17 +54,24 @@ export class GetCollectionByIdResponse {
     name: string;
 
     @ApiProperty({
-        type: Date,
-        description: 'Дата создания',
-        example: new Date()
+        type: String,
+        description: 'Описание коллекции',
+        example: 'Коллекция чувственных образов'
     })
-    createdAt: Date;
+    description: string;
 
     @ApiProperty({
-        type: Date,
-        description: 'Дата обновления',
-        example: new Date()
+        enum: CollectionStatus,
+        description: 'Описание коллекции',
+        example: CollectionStatus.PUBLISH
     })
-    updatedAt: Date;
+    status: `${CollectionStatus}`;
+
+    @ApiProperty({
+        type: String,
+        description: 'Массив идентификаторов на стор',
+        example: [randomUUID(),randomUUID()]
+    })
+    imageIds: string[];
 }
 

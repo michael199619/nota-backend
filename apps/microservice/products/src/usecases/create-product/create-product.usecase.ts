@@ -21,10 +21,9 @@ export class CreateProductUsecase extends Usecase<IProductsController['createPro
       id: created.id,
       isCollection: !!created.isCollection,
       musicId: created.musicId,
-      currentPrice: Number(created.currentPrice),
+      currentPrice: +created.currentPrice,
       name: created.name,
-      description: created.description,
-      createdAt: new Date(),
+      description: created.description
     };
   }
 }

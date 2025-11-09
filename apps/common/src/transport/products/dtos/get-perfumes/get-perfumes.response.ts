@@ -1,8 +1,8 @@
-import { ApiProperty,OmitType } from "@nestjs/swagger";
+import { ApiProperty,PickType } from "@nestjs/swagger";
 import { GetPerfumeByIdResponse } from "../get-perfume-by-id";
 import { PaginationResponse } from "./../../../../utils";
 
-export class GetPerfume extends OmitType(GetPerfumeByIdResponse,[]) {
+export class GetPerfume extends PickType(GetPerfumeByIdResponse,['id','authorId','sex','status']) {
 
 }
 

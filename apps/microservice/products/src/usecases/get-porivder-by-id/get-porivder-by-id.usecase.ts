@@ -1,30 +1,26 @@
 import { Injectable,NotFoundException } from '@nestjs/common';
-import { GetPorivderByIdDto,GetPorivderByIdResponse,IProductsController,Usecase } from "@perfume-platform/common";
+import { GetProviderByIdDto,GetProviderByIdResponse,IProductsController,Usecase } from "@perfume-platform/common";
 import { ProductsRepository } from '../../db/products/products.repository';
 
 @Injectable()
-export class GetPorivderByIdUsecase extends Usecase<IProductsController['getProviderById']> {
+export class GetProvivderByIdUsecase extends Usecase<IProductsController['getProviderById']> {
   constructor(
     private readonly productsRepository: ProductsRepository
   ) {
     super();
   }
 
-  public excecute(dto: GetPorivderByIdDto) {
+  public excecute(dto: GetProviderByIdDto) {
     return super.excecute(dto);
   }
 
-  public async handler(dto: GetPorivderByIdDto): Promise<GetPorivderByIdResponse> {
+  public async handler(dto: GetProviderByIdDto): Promise<GetProviderByIdResponse> {
     const provider=await this.productsRepository.getProviderById(dto.id);
 
     if (!provider) {
       throw new NotFoundException();
     }
 
-    return {
-      id: provider.id,
-      createdAt: (provider as any).createdAt??new Date(),
-      updatedAt: (provider as any).updatedAt??new Date(),
-    };
+    return provider;
   }
 }

@@ -20,9 +20,8 @@ export class CreateProviderUsecase extends Usecase<IProductsController['createPr
     return {
       id: provider.id,
       name: provider.name,
-      address: provider.address??undefined,
-      site: provider.site??undefined,
-      createdAt: (provider as any).createdAt??new Date(),
+      address: provider.address,
+      site: provider.site,
     };
   }
 }

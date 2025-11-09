@@ -29,7 +29,9 @@ export class GetProductByIdUsecase extends Usecase<IProductsController['getProdu
       description: product.description,
       collection: product.isCollection? {
         name: product.collectionItem!.collection.name,
-        id: product.collectionItem!.collection.id
+        id: product.collectionItem!.collection.id,
+        status: product.collectionItem!.collection.status
+
       }:null,
       music: {
         id: product.music.id,

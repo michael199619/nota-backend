@@ -20,8 +20,7 @@ export class CreateTrackUsecase extends Usecase<IProductsController['createTrack
     return {
       id: track.id,
       shortTrackId: track.shortTrackId,
-      fullTrackId: track.fullTrackId??undefined,
-      createdAt: (track as any).createdAt??new Date(),
+      fullTrackId: track.fullTrackId
     };
   }
 }

@@ -1,6 +1,6 @@
 import { ApiProperty,PickType } from "@nestjs/swagger";
 import { randomUUID } from "crypto";
-import { GetCollections } from "../get-collections";
+import { GetCollectionByIdResponse } from "../get-collection-by-id";
 import { GetMusicByIdResponse } from "../get-music-by-id";
 import { GetPerfumeByIdResponse } from "../get-perfume-by-id";
 
@@ -9,6 +9,10 @@ enum ProductItemEntity {
 }
 
 export class GetProductPerfume extends PickType(GetPerfumeByIdResponse,['authorId','id','sex','volume']) {
+
+}
+
+export class GetProductCollection extends PickType(GetCollectionByIdResponse,['id','name','status']) {
 
 }
 
@@ -28,10 +32,10 @@ export class GetProductByIdResponse {
     isCollection: boolean;
 
     @ApiProperty({
-        type: GetCollections,
-        description: 'Продукт из коллекции или нет',
+        type: GetProductCollection,
+        description: 'Коллекция',
     })
-    collection: GetCollections|null;
+    collection: GetProductCollection|null;
 
     @ApiProperty({
         type: Number,

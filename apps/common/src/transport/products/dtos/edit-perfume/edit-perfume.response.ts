@@ -22,7 +22,7 @@ export class EditPerfumeResponse {
     description: 'Пол для парфюма',
     example: Sex.UNISEX
   })
-  sex: Sex;
+  sex: `${Sex}`;
 
   @ApiProperty({
     type: String,
@@ -36,19 +36,5 @@ export class EditPerfumeResponse {
     description: 'Статус парфюма',
     example: PerfumeStatus.DRAFT
   })
-  status: PerfumeStatus;
-
-  @ApiProperty({
-    type: Date,
-    description: 'Дата создания',
-    example: new Date()
-  })
-  createdAt: Date;
-
-  @ApiProperty({
-    type: Date,
-    description: 'Дата обновления',
-    example: new Date()
-  })
-  updatedAt: Date;
+  status: `${PerfumeStatus}`;
 }

@@ -16,8 +16,7 @@ import { AuthGuard } from './auth.guard';
                     type: AuthType.API,
                     apiType: ApiType.USER,
                 }
-            },
-            
+            },           
         }),
         UserPublisherModule.register(),
     ],

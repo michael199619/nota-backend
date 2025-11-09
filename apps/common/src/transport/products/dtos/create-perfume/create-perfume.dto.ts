@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Transform } from "class-transformer";
+import { Transform,Type } from "class-transformer";
 import { IsEnum,IsInt,IsNotEmpty,IsNumber,IsString,IsUUID,Length,ValidateNested } from "class-validator";
 import { randomUUID } from "crypto";
-import { ComponentLvl,Sex,VolumeType } from "../../constants";
+import { ComponentLvl,Sex } from "../../constants";
 
 export class CreatePerfumeComponent {
   @ApiProperty({
@@ -36,14 +36,6 @@ export class CreatePerfumeComponent {
   })
   @IsNumber()
   volume: number;
-
-  @ApiProperty({
-    enum: VolumeType,
-    description: 'Тип объема компонента',
-    example: VolumeType.DROP
-  })
-  @IsEnum(VolumeType)
-  typeVolume: VolumeType;
 }
 
 export class CreatePerfumeDto {
@@ -76,8 +68,10 @@ export class CreatePerfumeDto {
 
   @ApiProperty({
     type: CreatePerfumeComponent,
+    isArray: true,
     description: 'Компоненты в парфюме'
   })
-  @ValidateNested({ each: true })
+  @Type(() => CreatePerfumeComponent)
+  @ValidateNested()
   components: CreatePerfumeComponent[];
 }

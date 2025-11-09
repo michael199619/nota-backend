@@ -18,7 +18,7 @@ export class RemoveProviderUsecase extends Usecase<IProductsController['removePr
     await this.productsRepository.removeProvider(dto.id);
 
     return {
-      success: HttpStatus.OK,
+      status: HttpStatus.OK,
     };
   }
 }

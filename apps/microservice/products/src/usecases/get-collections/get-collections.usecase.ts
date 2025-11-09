@@ -15,11 +15,6 @@ export class GetCollectionsUsecase extends Usecase<IProductsController['getColle
   }
 
   public async handler(dto: GetCollectionsDto): Promise<GetCollectionsResponse> {
-    const result=await this.productsRepository.getCollections(dto);
-
-    return {
-      ...result,
-      data: result.data.map(item => ({ id: item.id }))
-    };
+    return await this.productsRepository.getCollections(dto);;
   }
 }

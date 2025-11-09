@@ -21,7 +21,6 @@ export class AddProductForCollectionUsecase extends Usecase<IProductsController[
       id: item.id,
       productId: item.productId!,
       collectionId: item.collectionId,
-      description: item.description,
       index: item.index,
       imageIds: item.imageIds,
     };

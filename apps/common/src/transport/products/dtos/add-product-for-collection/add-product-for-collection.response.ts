@@ -24,13 +24,6 @@ export class AddProductForCollectionResponse {
     collectionId: string;
 
     @ApiProperty({
-        type: String,
-        description: 'Описание элемента коллекции',
-        example: 'Главный аромат коллекции'
-    })
-    description: string;
-
-    @ApiProperty({
         type: Number,
         description: 'Индекс элемента в коллекции',
         example: 1

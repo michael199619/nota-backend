@@ -22,12 +22,5 @@ export class CreateTrackResponse {
         description: 'Полный трек ID',
         example: randomUUID()
     })
-    fullTrackId?: string;
-
-    @ApiProperty({
-        type: Date,
-        description: 'Дата создания',
-        example: new Date()
-    })
-    createdAt: Date;
+    fullTrackId: string|null;
 }

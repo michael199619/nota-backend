@@ -21,13 +21,13 @@ export class GetProviderByIdResponse {
         description: 'Адрес поставщика',
         example: '12-я красноармейская ул., 26'
     })
-    address: string;
+    address: string|null;
 
     @ApiProperty({
         type: String,
         description: 'Сайт поставщика',
         example: 'https://procandle.store'
     })
-    site: string;
+    site: string|null;
 
 }

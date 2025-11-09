@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty,IsString,IsUUID } from "class-validator";
+import { IsInt,IsUUID } from "class-validator";
 import { randomUUID } from "crypto";
 
 export class AddProductForCollectionDto {
@@ -20,20 +20,11 @@ export class AddProductForCollectionDto {
   collectionId: string;
 
   @ApiProperty({
-    type: String,
-    description: 'Описание элемента коллекции',
-    example: 'Главный аромат коллекции'
-  })
-  @IsString()
-  @IsNotEmpty()
-  description: string;
-
-  @ApiProperty({
     type: Number,
     description: 'Индекс элемента в коллекции',
     example: 1
   })
-  @IsNotEmpty()
+  @IsInt()
   index: number;
 
   @ApiProperty({
@@ -41,6 +32,6 @@ export class AddProductForCollectionDto {
     description: 'Идентификаторы изображений в сторе',
     example: [randomUUID(),randomUUID()]
   })
-  @IsUUID('4',{ each: true })
+  @IsUUID(undefined,{ each: true })
   imageIds: string[];
 }

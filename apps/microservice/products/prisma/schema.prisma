@@ -101,6 +101,7 @@ model Collection {
   name        String           @db.VarChar(255)
   description String           @db.Text
   status      CollectionStatus @default(DRAFT)
+  imageIds    String[]         @db.Uuid
 
   items CollectionItem[]
 
@@ -110,15 +111,12 @@ model Collection {
 model CollectionItem {
   id           String   @id @default(uuid()) @db.Uuid
   productId    String?  @unique @map("product_id") @db.Uuid
-  description  String   @db.Text
   collectionId String   @map("collection_id") @db.Uuid
   index        Int
   imageIds     String[] @map("image_ids") @db.Uuid
 
-  collection  Collection @relation(fields: [collectionId], references: [id])
-  product     Product?   @relation(fields: [productId], references: [id])
-  component   Component? @relation(fields: [componentId], references: [id])
-  componentId String?    @db.Uuid
+  collection Collection @relation(fields: [collectionId], references: [id])
+  product    Product?   @relation(fields: [productId], references: [id])
 }
 
 model ComponentHistory {
@@ -154,7 +152,6 @@ model Component {
   providerId    String             @map("provider_id") @db.Uuid
   provider      Provider           @relation(fields: [providerId], references: [id])
   histories     ComponentHistory[]
-  components    CollectionItem[]
   ComponentItem ComponentItem[]
 
   @@map("component")

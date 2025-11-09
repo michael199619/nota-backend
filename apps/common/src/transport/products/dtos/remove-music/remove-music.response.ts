@@ -7,5 +7,5 @@ export class RemoveMusicResponse {
         description: 'Статус удаления',
         example: HttpStatus.OK
     })
-    success: HttpStatus;
+    status: HttpStatus;
 }

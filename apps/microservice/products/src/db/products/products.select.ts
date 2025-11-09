@@ -10,7 +10,9 @@ export const selectProduct={
             collection: {
                 select: {
                     id: true,
-                    name: true
+                    name: true,
+                    status: true,
+                    imageIds: true,
                 }
             }
         }
@@ -64,26 +66,18 @@ export const selectCollection: Prisma.CollectionSelect={
     name: true,
     description: true,
     status: true,
+    imageIds: true,
     items: {
         select: {
-            description: true,
+            id: true,
+            productId: true,
             index: true,
             imageIds: true,
-            collection: {
+            product: {
                 select: {
                     id: true,
-                    description: true,
-                    status: true,
                     name: true,
-                    items: {
-                        select: {
-                            imageIds: true,
-                            index: true,
-                            product: {
-                                select: selectProduct
-                            }
-                        }
-                    }
+                    description: true
                 }
             }
         }

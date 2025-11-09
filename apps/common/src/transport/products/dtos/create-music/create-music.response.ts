@@ -16,7 +16,7 @@ export class CreateMusicResponse {
     description: 'Идентификатор трека',
     example: randomUUID()
   })
-  trackId?: string;
+  trackId: string|null;
 
   @ApiProperty({
     type: String,
@@ -30,12 +30,5 @@ export class CreateMusicResponse {
     description: 'Тип музыки',
     example: MusicType.TRACK
   })
-  type: MusicType;
-
-  @ApiProperty({
-    type: Date,
-    description: 'Дата создания',
-    example: new Date()
-  })
-  createdAt: Date;
+  type: `${MusicType}`;
 }

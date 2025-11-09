@@ -22,7 +22,7 @@ export class CreateProviderResponse {
     description: 'Адрес поставщика',
     example: '123 Rue de Rivoli, Paris, France'
   })
-  address?: string;
+  address: string|null;
 
   @ApiProperty({
     type: String,
@@ -30,12 +30,5 @@ export class CreateProviderResponse {
     description: 'Сайт поставщика',
     example: 'https://www.chanel.com'
   })
-  site?: string;
-
-  @ApiProperty({
-    type: Date,
-    description: 'Дата создания',
-    example: new Date()
-  })
-  createdAt: Date;
+  site: string|null;
 }

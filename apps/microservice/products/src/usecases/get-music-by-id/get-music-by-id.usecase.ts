@@ -23,8 +23,12 @@ export class GetMusicByIdUsecase extends Usecase<IProductsController['getMusicBy
 
     return {
       id: music.id,
-      createdAt: (music as any).createdAt??new Date(),
-      updatedAt: (music as any).updatedAt??new Date(),
+      name: music.name,
+      track: music.track? {
+        id: music.track.id,
+        shortTrackId: music.track.shortTrackId,
+        fullTrackId: music.track.fullTrackId,
+      }:null,
     };
   }
 }

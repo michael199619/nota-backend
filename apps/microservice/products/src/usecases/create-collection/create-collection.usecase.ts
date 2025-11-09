@@ -21,8 +21,7 @@ export class CreateCollectionUsecase extends Usecase<IProductsController['create
       id: collection.id,
       name: collection.name,
       description: collection.description,
-      status: collection.status,
-      createdAt: (collection as any).createdAt??new Date(),
+      status: collection.status
     };
   }
 }

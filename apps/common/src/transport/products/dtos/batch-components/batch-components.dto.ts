@@ -8,7 +8,7 @@ export class ComponentItemDto {
     @ApiProperty({
         type: String,
         description: 'Наименование компонента',
-        example: randomUUID(),
+        example: 'земля',
     })
     @IsString()
     @IsNotEmpty()

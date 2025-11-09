@@ -19,10 +19,9 @@ export class CreateMusicUsecase extends Usecase<IProductsController['createMusic
 
     return {
       id: music.id,
-      trackId: music.trackId??undefined,
+      trackId: music.trackId,
       name: music.name,
-      type: music.type,
-      createdAt: (music as any).createdAt??new Date(),
+      type: music.type
     };
   }
 }

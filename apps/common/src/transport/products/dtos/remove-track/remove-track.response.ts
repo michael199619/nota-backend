@@ -7,5 +7,5 @@ export class RemoveTrackResponse {
         description: 'Статус',
         example: HttpStatus.OK
     })
-    success: HttpStatus;
+    status: HttpStatus;
 }

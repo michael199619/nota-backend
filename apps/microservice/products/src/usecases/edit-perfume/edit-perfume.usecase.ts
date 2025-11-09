@@ -22,9 +22,7 @@ export class EditPerfumeUsecase extends Usecase<IProductsController['editPerfume
       authorId: perfume.authorId,
       sex: perfume.sex,
       authorDescription: perfume.authorDescription,
-      status: perfume.status,
-      createdAt: (perfume as any).createdAt??new Date(),
-      updatedAt: (perfume as any).updatedAt??new Date(),
+      status: perfume.status
     };
   }
 }
