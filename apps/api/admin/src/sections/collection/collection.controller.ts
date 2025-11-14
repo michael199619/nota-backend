@@ -1,5 +1,5 @@
 import { Body,Controller,Delete,Get,Param,ParseUUIDPipe,Post,Put,Query,UseGuards } from '@nestjs/common';
-import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse,ApiOperation,ApiTags } from '@nestjs/swagger';
 import { AddProductForCollectionDto,AddProductForCollectionResponse,ChangeStatusOfCollectionDto,ChangeStatusOfCollectionResponse,CreateCollectionDto,CreateCollectionResponse,GetCollectionByIdResponse,GetCollectionsDto,GetCollectionsResponse,ProductsPublisher,RemoveCollectionResponse,RemoveProductFromCollectionResponse } from "@perfume-platform/common";
 import { firstValueFrom } from 'rxjs';
 import { AuthGuard } from '../../modules/auth/auth.guard';
@@ -16,7 +16,7 @@ export class CollectionController {
   @ApiOperation({
     description: 'Создать коллекцию',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: CreateCollectionResponse
   })
   createCollection(
@@ -28,7 +28,7 @@ export class CollectionController {
   @ApiOperation({
     description: 'Получить список коллекций',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: GetCollectionsResponse
   })
   getCollections(
@@ -40,7 +40,7 @@ export class CollectionController {
   @ApiOperation({
     description: 'Получить коллекцию по идентификатору',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: GetCollectionByIdResponse
   })
   getCollectionById(
@@ -52,7 +52,7 @@ export class CollectionController {
   @ApiOperation({
     description: 'Изменить статус коллекции',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: ChangeStatusOfCollectionResponse
   })
   changeStatusOfCollection(
@@ -65,7 +65,7 @@ export class CollectionController {
   @ApiOperation({
     description: 'Удалить коллекцию',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: RemoveCollectionResponse
   })
   removeCollection(
@@ -77,7 +77,7 @@ export class CollectionController {
   @ApiOperation({
     description: 'Добавить продукт в коллекцию',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: AddProductForCollectionResponse
   })
   addProductForCollection(
@@ -91,7 +91,7 @@ export class CollectionController {
   @ApiOperation({
     description: 'Удалить продукт из коллекции',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: RemoveProductFromCollectionResponse
   })
   removeProductFromCollection(

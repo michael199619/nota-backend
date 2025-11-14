@@ -1,5 +1,5 @@
 import { Body,Controller,Get,Post,Query,UseGuards } from '@nestjs/common';
-import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse,ApiOperation,ApiProperty,ApiTags } from '@nestjs/swagger';
 import { BatchComponentsDto,BatchComponentsResponse,GetComponentsDto,GetComponentsResponse,ProductsPublisher,SetFinishComponentDto,SetFinishComponentResponse } from "@perfume-platform/common";
 import { firstValueFrom } from 'rxjs';
 import { AuthGuard } from '../../modules/auth/auth.guard';
@@ -16,9 +16,10 @@ export class ComponentController {
   @ApiOperation({
     description: 'Получить список компонентов',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: GetComponentsResponse
   })
+  @ApiProperty({ type: GetComponentsDto })
   getComponents(
     @Query() dto: GetComponentsDto) {
     return firstValueFrom(this.productsPublisher.getComponents(dto))
@@ -26,9 +27,9 @@ export class ComponentController {
 
   @Post('batch')
   @ApiOperation({
-    description: 'Пакетное создание/обновление компонентов',
+    description: 'Создание/добавления компонентов',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: BatchComponentsResponse
   })
   batchComponents(
@@ -36,14 +37,14 @@ export class ComponentController {
     return firstValueFrom(this.productsPublisher.batchComponents(dto))
   }
 
-  @Post('finish')
+  @Post('spent')
   @ApiOperation({
-    description: 'Установить компонент как финишный',
+    description: 'Расход компонента',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: SetFinishComponentResponse
   })
-  setFinishComponent(
+  spentComponent(
     @Body() dto: SetFinishComponentDto) {
     return firstValueFrom(this.productsPublisher.setFinishComponent(dto))
   }

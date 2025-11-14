@@ -25,7 +25,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/nota-backend/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/nota-backend/test/jest-e2e.json",
+    "frontend:dev": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "frontend:install": "cd frontend && npm install"
   },
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.0.2",

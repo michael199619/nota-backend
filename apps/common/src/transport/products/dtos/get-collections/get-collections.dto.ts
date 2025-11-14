@@ -13,6 +13,6 @@ export class GetCollectionsDto extends PaginationDto {
     @IsString()
     @IsOptional()
     @Length(0,255)
-    @Transform(({ value }) => value?.trim())
+    @Transform(({ value }) => value?.trim().toLowerCase())
     search?: string;
 }

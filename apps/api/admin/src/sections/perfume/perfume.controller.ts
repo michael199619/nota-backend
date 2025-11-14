@@ -1,5 +1,5 @@
 import { Body,Controller,Get,Param,ParseUUIDPipe,Post,Put,Query,UseGuards } from '@nestjs/common';
-import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse,ApiOperation,ApiTags } from '@nestjs/swagger';
 import { ChangeStatusPerfumeDto,ChangeStatusPerfumeResponse,ContextService,CreatePerfumeResponse,EditPerfumeDto,EditPerfumeResponse,GetPerfumeByIdResponse,GetPerfumesDto,GetPerfumesResponse,ProductsPublisher } from "@perfume-platform/common";
 import { firstValueFrom } from 'rxjs';
 import { AuthGuard } from '../../modules/auth/auth.guard';
@@ -18,7 +18,7 @@ export class PerfumeController {
   @ApiOperation({
     description: 'Создать парфюм',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: CreatePerfumeResponse
   })
   createPerfume(
@@ -30,7 +30,7 @@ export class PerfumeController {
   @ApiOperation({
     description: 'Получить список парфюмов',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: GetPerfumesResponse
   })
   getPerfumes(
@@ -42,7 +42,7 @@ export class PerfumeController {
   @ApiOperation({
     description: 'Получить парфюм по идентификатору',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: GetPerfumeByIdResponse
   })
   getPerfumeById(
@@ -54,7 +54,7 @@ export class PerfumeController {
   @ApiOperation({
     description: 'Редактировать парфюм',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: EditPerfumeResponse
   })
   editPerfume(
@@ -67,7 +67,7 @@ export class PerfumeController {
   @ApiOperation({
     description: 'Изменить статус парфюма',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: ChangeStatusPerfumeResponse
   })
   changeStatusPerfume(

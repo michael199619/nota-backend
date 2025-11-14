@@ -1,5 +1,5 @@
 import { Body,Controller,Delete,Get,Param,ParseUUIDPipe,Post,Query,UseGuards } from '@nestjs/common';
-import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse,ApiOperation,ApiTags } from '@nestjs/swagger';
 import { CreateMusicDto,CreateMusicResponse,CreateTrackDto,CreateTrackResponse,GetMusicByIdResponse,GetMusicsDto,GetMusicsResponse,GetTracksDto,GetTracksResponse,ProductsPublisher,RemoveMusicResponse,RemoveTrackResponse } from "@perfume-platform/common";
 import { firstValueFrom } from 'rxjs';
 import { AuthGuard } from '../../modules/auth/auth.guard';
@@ -16,7 +16,7 @@ export class MusicController {
   @ApiOperation({
     description: 'Создать трек',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: CreateTrackResponse
   })
   createTrack(
@@ -28,7 +28,7 @@ export class MusicController {
   @ApiOperation({
     description: 'Получить список треков',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: GetTracksResponse
   })
   getTracks(
@@ -40,7 +40,7 @@ export class MusicController {
   @ApiOperation({
     description: 'Удалить трек',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: RemoveTrackResponse
   })
   removeTrack(
@@ -52,7 +52,7 @@ export class MusicController {
   @ApiOperation({
     description: 'Создать музыку',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: CreateMusicResponse
   })
   createMusic(
@@ -64,7 +64,7 @@ export class MusicController {
   @ApiOperation({
     description: 'Получить список музыки',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: GetMusicsResponse
   })
   getMusics(
@@ -76,7 +76,7 @@ export class MusicController {
   @ApiOperation({
     description: 'Получить музыку по идентификатору',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: GetMusicByIdResponse
   })
   getMusicById(
@@ -88,7 +88,7 @@ export class MusicController {
   @ApiOperation({
     description: 'Удалить музыку',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: RemoveMusicResponse
   })
   removeMusic(

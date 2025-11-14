@@ -19,22 +19,22 @@ export class UsersRepository extends Repository {
                 password: true,
                 login: true
             },
-            where: {id }
+            where: { id }
         })
     }
 
-    getUserByLoginOrEmailOrPhone(data: SearchPrisma<User, keyof User>[], excludeId?: string, tx?: Prisma.TransactionClient) {
-        const where: Prisma.UserWhereInput = {};
+    getUserByLoginOrEmailOrPhone(data: SearchPrisma<User,keyof User>[],excludeId?: string,tx?: Prisma.TransactionClient) {
+        const where: Prisma.UserWhereInput={};
 
         if (excludeId) {
-            where.id = {
+            where.id={
                 not: excludeId
             }
         }
 
-        if(data.length) {
-            where.OR = data.map(({key, value}) => {
-                return {[key]: value, ...where};
+        if (data.length) {
+            where.OR=data.map(({ key,value }) => {
+                return { [key]: value,...where };
             });
         }
 
@@ -51,11 +51,17 @@ export class UsersRepository extends Repository {
     }
 
     async getUsers(dto: GetAllUsersDto) {
-        const where: Prisma.UserWhereInput = {
-            //     ...this.getContains<User>('name', dto.seatch),
+        const where: Prisma.UserWhereInput={
+            ...this.getContains<User>('name',dto.search),
+        }
+        console.log(dto.ids)
+        if (dto.ids?.length) {
+            where.id={
+                in: dto.ids
+            }
         }
 
-        const [data, total] = await Promise.all([
+        const [data,total]=await Promise.all([
             this.prisma.user.findMany({
                 where,
                 select: {
@@ -69,10 +75,10 @@ export class UsersRepository extends Repository {
             this.prisma.user.count({ where })
         ]);
 
-        return this.paginationResponse({ data, total })
+        return this.paginationResponse({ data,total })
     }
 
-    getUserById(id: string, tx?: Prisma.TransactionClient) {
+    getUserById(id: string,tx?: Prisma.TransactionClient) {
         return this.getContext(tx).user.findFirst({
             where: { id },
             select: {
@@ -84,16 +90,16 @@ export class UsersRepository extends Repository {
         })
     }
 
-    changePasswordUser(id: string, password: string) {
+    changePasswordUser(id: string,password: string) {
         return this.prisma.user.update({
-            where: {id},
+            where: { id },
             data: {
                 password
             }
         })
     }
 
-    createUser(data: CreateUserDto, tx?: Prisma.TransactionClient) {
+    createUser(data: CreateUserDto,tx?: Prisma.TransactionClient) {
         return this.getContext(tx).user.create({
             data,
             select: {
@@ -105,7 +111,7 @@ export class UsersRepository extends Repository {
         })
     }
 
-    editUser({ id, ...data }: EditUserDto, tx?: Prisma.TransactionClient) {
+    editUser({ id,...data }: EditUserDto,tx?: Prisma.TransactionClient) {
         return this.getContext(tx).user.update({
             where: { id },
             data,
@@ -145,7 +151,7 @@ export class UsersRepository extends Repository {
     }
 
     async addSalaryUser(dto: AddSalaryUserDto) {
-        const { user } = await this.prisma.salary.create({
+        const { user }=await this.prisma.salary.create({
             select: {
                 user: {
                     select: {
@@ -171,9 +177,9 @@ export class UsersRepository extends Repository {
         return user
     }
 
-    async removeSalaryUser({ ids, userId }: RemoveSalaryUserDto) {
+    async removeSalaryUser({ ids,userId }: RemoveSalaryUserDto) {
         await this.prisma.salary.deleteMany({
-            where: { userId, id: { in: ids } },
+            where: { userId,id: { in: ids } },
         });
     }
 
@@ -196,18 +202,18 @@ export class UsersRepository extends Repository {
     }
 
     async getSalaryUsers(dto: GetSalaryUsersDto) {
-        const where: Prisma.UserWhereInput = {};
+        const where: Prisma.UserWhereInput={};
 
         if (dto.search) {
-            where.OR = where.OR || [];
+            where.OR=where.OR||[];
 
-            where.OR.push(this.getContains<User>('name', dto.search)!);
-            where.OR.push(this.getContains<User>('login', dto.search)!);
-            where.OR.push(this.getContains<User>('email', dto.search)!);
-            where.OR.push(this.getContains<User>('phone', dto.search)!);
+            where.OR.push(this.getContains<User>('name',dto.search)!);
+            where.OR.push(this.getContains<User>('login',dto.search)!);
+            where.OR.push(this.getContains<User>('email',dto.search)!);
+            where.OR.push(this.getContains<User>('phone',dto.search)!);
         }
 
-        const [data, total] = await Promise.all([
+        const [data,total]=await Promise.all([
             this.prisma.user.findMany({
                 where,
                 select: {
@@ -224,6 +230,6 @@ export class UsersRepository extends Repository {
             this.prisma.user.count({ where })
         ]);
 
-        return this.paginationResponse({ data, total })
+        return this.paginationResponse({ data,total })
     }
 } 

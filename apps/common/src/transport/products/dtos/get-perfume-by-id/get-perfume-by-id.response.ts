@@ -74,6 +74,20 @@ export class GetPerfumeByIdResponse {
   authorId: string;
 
   @ApiProperty({
+    type: String,
+    description: 'Имя пользователя',
+    example: 'Яся'
+  })
+  authorName: string;
+
+  @ApiProperty({
+    type: String,
+    description: 'Название парфюма',
+    example: 'Подростковый максимализм'
+  })
+  name: string;
+
+  @ApiProperty({
     enum: Sex,
     description: 'Пол для парфюма',
     example: Sex.UNISEX

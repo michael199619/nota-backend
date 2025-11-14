@@ -1,6 +1,6 @@
-import { Body,Controller,Post,Put,UseGuards } from '@nestjs/common';
-import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
-import { ChangePasswordUserResponse,ContextService,LoginUserDto,LoginUserResponse,LogoutUserResponse,RefreshTokenUserResponse,UserPublisher } from '@perfume-platform/common';
+import { Body,Controller,Get,Post,Put,UseGuards } from '@nestjs/common';
+import { ApiOkResponse,ApiOperation,ApiTags } from '@nestjs/swagger';
+import { ChangePasswordUserResponse,ContextService,GetUserResponse,LoginUserDto,LoginUserResponse,LogoutUserResponse,RefreshTokenUserResponse,UserPublisher } from '@perfume-platform/common';
 import { firstValueFrom } from 'rxjs';
 import { AuthGuard } from '../../modules/auth/auth.guard';
 import { AdminChangePasswordUserDto } from './auth.dto';
@@ -8,79 +8,91 @@ import { AdminChangePasswordUserDto } from './auth.dto';
 @ApiTags('Авторизация')
 @Controller('auth')
 export class AuthController {
-    constructor(
-        private readonly userPublisher: UserPublisher,
-        private readonly ctx: ContextService
-    ) {}
+  constructor(
+    private readonly userPublisher: UserPublisher,
+    private readonly ctx: ContextService
+  ) { }
 
-    @Post()
-    @ApiOperation({
-        description: 'Вход',
-    })
-    @ApiResponse({
-        type: LoginUserResponse
-    })
-    async loginUser(
-        @Body() dto: LoginUserDto
-    ) {
-        const login = await firstValueFrom(this.userPublisher.loginUser(dto));   console.log(login)
-        this.ctx.setTokens(login)
-        return login;
-    }
+  @Post()
+  @ApiOperation({
+    description: 'Вход',
+  })
+  @ApiOkResponse({
+    type: LoginUserResponse
+  })
+  async loginUser(
+    @Body() dto: LoginUserDto
+  ) {
+    const login=await firstValueFrom(this.userPublisher.loginUser(dto));
+    this.ctx.setTokens(login)
+    return login;
+  }
 
-    @UseGuards(AuthGuard)
-    @Post('logout')
-    @ApiOperation({
-      description: 'Выход',
-    })
-    @ApiResponse({type: LogoutUserResponse})
-    async logoutUser() {
-      const res = await firstValueFrom(this.userPublisher.logoutUser({
-        id: this.ctx.user.id,
-        refreshToken: this.ctx.refreshToken
-      }));
+  @Get()
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    description: 'Получить профиль',
+  })
+  @ApiOkResponse({
+    type: GetUserResponse
+  })
+  getProfile() {
+    return firstValueFrom(this.userPublisher.getUser(this.ctx.user));
+  }
 
-      this.ctx.removeTokens();
+  @UseGuards(AuthGuard)
+  @Post('logout')
+  @ApiOperation({
+    description: 'Выход',
+  })
+  @ApiOkResponse({ type: LogoutUserResponse })
+  async logoutUser() {
+    const res=await firstValueFrom(this.userPublisher.logoutUser({
+      id: this.ctx.user.id,
+      refreshToken: this.ctx.refreshToken
+    }));
 
-      return res;
-    }
+    this.ctx.removeTokens();
 
-    @Put('change-password')
-    @ApiOperation({
-      description: 'Изменить пароль',
-    })
-    @ApiResponse({
-      type: ChangePasswordUserResponse
-    })
-    @UseGuards(AuthGuard)
-    async changePasswordUser(
-      @Body() dto: AdminChangePasswordUserDto
-    ) {
-      const login = await firstValueFrom(this.userPublisher.changePasswordUser({
-        ...dto,
-        id: this.ctx.userId
-      }));
+    return res;
+  }
 
-      this.ctx.setTokens(login);
+  @Put('change-password')
+  @ApiOperation({
+    description: 'Изменить пароль',
+  })
+  @ApiOkResponse({
+    type: ChangePasswordUserResponse
+  })
+  @UseGuards(AuthGuard)
+  async changePasswordUser(
+    @Body() dto: AdminChangePasswordUserDto
+  ) {
+    const login=await firstValueFrom(this.userPublisher.changePasswordUser({
+      ...dto,
+      id: this.ctx.userId
+    }));
 
-      return login;
-    }
+    this.ctx.setTokens(login);
 
-    @Post('refresh-token')
-    @ApiOperation({
-        description: 'Обновить токен',
-    })
-    @ApiResponse({
-        type: RefreshTokenUserResponse
-    })
-    async refreshTokenUser() {
-        const login = await firstValueFrom(this.userPublisher.refreshTokenUser({
-          id: this.ctx.userId,
-          refreshToken: this.ctx.refreshToken
-        }));
+    return login;
+  }
 
-        this.ctx.setTokens(login);
+  @Post('refresh-token')
+  @ApiOperation({
+    description: 'Обновить токен',
+  })
+  @ApiOkResponse({
+    type: RefreshTokenUserResponse
+  })
+  async refreshTokenUser() {
+    const login=await firstValueFrom(this.userPublisher.refreshTokenUser({
+      id: this.ctx.userId,
+      refreshToken: this.ctx.refreshToken
+    }));
 
-        return login
-    }
+    this.ctx.setTokens(login);
+
+    return login
+  }
 }

@@ -1,5 +1,5 @@
 import { Body,Controller,Delete,Get,Param,ParseUUIDPipe,Post,Put,Query,UseGuards } from '@nestjs/common';
-import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse,ApiOperation,ApiTags } from '@nestjs/swagger';
 import { CacheService,ContextService,CreateArticleResponse,DeleteArticleResponse,EditArticleResponse,GetArticleByIdResponse,GetArticlesResponse,NewsPublisher,PublishArticleByIdResponse } from '@perfume-platform/common';
 import { firstValueFrom } from 'rxjs';
 import { AuthGuard } from '../../modules/auth/auth.guard';
@@ -16,7 +16,7 @@ export class NewsController {
 
     @Get()
     @ApiOperation({ description: 'Получить статьи без контента' })
-    @ApiResponse({ type: GetArticlesResponse })
+    @ApiOkResponse({ type: GetArticlesResponse })
     async getArticles(@Query() dto: AdminGetArticlesDto) {
         return firstValueFrom(this.newsPublisher.getArticles({
             ...dto,
@@ -27,7 +27,7 @@ export class NewsController {
 
     @Get(':id')
     @ApiOperation({ description: 'Получить статью' })
-    @ApiResponse({ type: GetArticleByIdResponse })
+    @ApiOkResponse({ type: GetArticleByIdResponse })
     async getArticleById(
         @Param('id',ParseUUIDPipe) id: string
     ) {
@@ -43,7 +43,7 @@ export class NewsController {
     @UseGuards(AuthGuard)
     @Delete(':id')
     @ApiOperation({ description: 'Удалить статью' })
-    @ApiResponse({ type: DeleteArticleResponse })
+    @ApiOkResponse({ type: DeleteArticleResponse })
     deleteArticle(
         @Param('id',ParseUUIDPipe) id: string
     ) {
@@ -53,7 +53,7 @@ export class NewsController {
     @UseGuards(AuthGuard)
     @Put(':id')
     @ApiOperation({ description: 'Отредактировать статью' })
-    @ApiResponse({ type: EditArticleResponse })
+    @ApiOkResponse({ type: EditArticleResponse })
     editArticle(
         @Param('id',ParseUUIDPipe) id: string,
         @Body() dto: AdminEditArticleDto
@@ -64,7 +64,7 @@ export class NewsController {
     @UseGuards(AuthGuard)
     @Post()
     @ApiOperation({ description: 'Создать статью' })
-    @ApiResponse({ type: CreateArticleResponse })
+    @ApiOkResponse({ type: CreateArticleResponse })
     createArticle(
         @Body() dto: AdminCreateArticleDto
     ) {
@@ -73,7 +73,7 @@ export class NewsController {
 
     @Put(':id/publish')
     @ApiOperation({ description: 'Опубликовать статью' })
-    @ApiResponse({ type: PublishArticleByIdResponse })
+    @ApiOkResponse({ type: PublishArticleByIdResponse })
     publishArticleById(
         @Param('id',ParseUUIDPipe) id: string
     ) {

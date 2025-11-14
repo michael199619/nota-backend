@@ -1,5 +1,5 @@
 import { Body,Controller,Get,Param,ParseUUIDPipe,Post,UseGuards } from '@nestjs/common';
-import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse,ApiOperation,ApiTags } from '@nestjs/swagger';
 import { CreateProductDto,CreateProductResponse,GetProductByIdResponse,ProductsPublisher } from "@perfume-platform/common";
 import { firstValueFrom } from 'rxjs';
 import { AuthGuard } from '../../modules/auth/auth.guard';
@@ -16,7 +16,7 @@ export class ProductController {
   @ApiOperation({
     description: 'Создать продукт',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: CreateProductResponse
   })
   createProduct(
@@ -28,7 +28,7 @@ export class ProductController {
   @ApiOperation({
     description: 'Получить продукт по идентификатору',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: GetProductByIdResponse
   })
   getProductById(

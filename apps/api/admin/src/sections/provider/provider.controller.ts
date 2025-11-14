@@ -1,5 +1,5 @@
 import { Body,Controller,Delete,Get,Param,ParseUUIDPipe,Post,Query,UseGuards } from '@nestjs/common';
-import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse,ApiOperation,ApiTags } from '@nestjs/swagger';
 import { CreateProviderDto,CreateProviderResponse,GetProviderByIdResponse,GetProvidersDto,GetProvidersResponse,ProductsPublisher,RemoveProviderResponse } from "@perfume-platform/common";
 import { firstValueFrom } from 'rxjs';
 import { AuthGuard } from '../../modules/auth/auth.guard';
@@ -16,7 +16,7 @@ export class ProviderController {
   @ApiOperation({
     description: 'Создать провайдера',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: CreateProviderResponse
   })
   createProvider(
@@ -28,7 +28,7 @@ export class ProviderController {
   @ApiOperation({
     description: 'Получить список провайдеров',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: GetProvidersResponse
   })
   getProviders(
@@ -40,7 +40,7 @@ export class ProviderController {
   @ApiOperation({
     description: 'Получить провайдера по идентификатору',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: GetProviderByIdResponse
   })
   getProviderById(
@@ -52,7 +52,7 @@ export class ProviderController {
   @ApiOperation({
     description: 'Удалить провайдера',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     type: RemoveProviderResponse
   })
   removeProvider(

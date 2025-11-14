@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { PrismaModule } from './db/prisma.module';
 import { ConfigurationModule } from './modules/config/config.module';
+import { TransportModule } from './modules/transport/transport.module';
 import { AddProductForCollectionModule } from './usecases/add-product-for-collection/add-product-for-collection.module';
 import { BatchComponentsModule } from './usecases/batch-components/batch-components.module';
 import { ChangeStatusOfCollectionModule } from './usecases/change-status-of-collection/change-status-of-collection.module';
@@ -34,6 +35,7 @@ import { SetFinishComponentModule } from './usecases/set-finish-component/set-fi
 @Module({
     imports: [
         ConfigurationModule,
+        TransportModule,
         PrismaModule,
         AddProductForCollectionModule,
         BatchComponentsModule,

@@ -1,5 +1,5 @@
 import { Controller,Get,Query,UseGuards } from '@nestjs/common';
-import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse,ApiOperation,ApiTags } from '@nestjs/swagger';
 import { GetRolesDto,GetRolesResponse,UserPublisher } from '@perfume-platform/common';
 import { firstValueFrom } from 'rxjs';
 import { AuthGuard } from '../../modules/auth/auth.guard';
@@ -16,7 +16,7 @@ export class RoleController {
     @ApiOperation({
         description: 'Получить роли',
     })
-    @ApiResponse({
+    @ApiOkResponse({
         type: GetRolesResponse
     })
     getRoles(

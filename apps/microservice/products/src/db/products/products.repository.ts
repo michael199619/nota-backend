@@ -14,11 +14,15 @@ export class ProductsRepository extends Repository {
 
     async getCollections(dto: GetCollectionsDto,tx?: Prisma.TransactionClient) {
         const { skip,take }=this.preparePagination(dto)
-        const where=dto.search? {
-            name: {
-                contains: dto.search
-            }
-        }:undefined;
+        console.log(dto.search)
+        const where: Prisma.CollectionWhereInput={};
+
+        if (dto.search) {
+            where.OR=[
+                this.getContains<Prisma.CollectionSelect>('name',dto.search)!,
+                this.getContains<Prisma.CollectionSelect>('description',dto.search)!
+            ]
+        }
 
         const [data,total]=await Promise.all([
             this.getContext(tx).collection.findMany({
@@ -196,18 +200,17 @@ export class ProductsRepository extends Repository {
     // Perfume methods
     async getPerfumes(dto: GetPerfumesDto,tx?: Prisma.TransactionClient) {
         const { skip,take }=this.preparePagination({ page: dto.page??1,limit: dto.limit??10 });
-        const where=dto.search? {
-            authorDescription: {
-                contains: dto.search
-            }
-        }:undefined;
+        const where: Prisma.PerfumeWhereInput={
+            ...this.getContains<Prisma.PerfumeSelect>('authorDescription',dto.search)
+        };
 
         const [data,total]=await Promise.all([
             this.getContext(tx).perfume.findMany({
                 select: {
                     id: true,
-                    sex: true,
+                    name: true,
                     authorId: true,
+                    authorDescription: true,
                     status: true
                 },
                 where,
@@ -227,6 +230,7 @@ export class ProductsRepository extends Repository {
                 authorId: true,
                 authorDescription: true,
                 sex: true,
+                name: true,
                 productItems: true,
                 status: true,
                 componentsItems: {

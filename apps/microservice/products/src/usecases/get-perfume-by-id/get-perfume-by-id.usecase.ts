@@ -1,11 +1,13 @@
 import { Injectable,NotFoundException } from '@nestjs/common';
-import { GetPerfumeByIdDto,GetPerfumeByIdResponse,IProductsController,Usecase } from "@perfume-platform/common";
+import { GetPerfumeByIdDto,GetPerfumeByIdResponse,IProductsController,Usecase,UserPublisher } from "@perfume-platform/common";
+import { firstValueFrom } from 'rxjs';
 import { ProductsRepository } from '../../db/products/products.repository';
 
 @Injectable()
 export class GetPerfumeByIdUsecase extends Usecase<IProductsController['getPerfumeById']> {
   constructor(
-    private readonly productsRepository: ProductsRepository
+    private readonly productsRepository: ProductsRepository,
+    private readonly usersPublisher: UserPublisher
   ) {
     super();
   }
@@ -21,10 +23,14 @@ export class GetPerfumeByIdUsecase extends Usecase<IProductsController['getPerfu
       throw new NotFoundException();
     }
 
+    const user=await firstValueFrom(this.usersPublisher.getUser({ id: perfume.authorId }))
+
     return {
       id: perfume.id,
       authorId: perfume.authorId,
+      name: perfume.name,
       sex: perfume.sex,
+      authorName: user.name,
       authorDescription: perfume.authorDescription,
       status: perfume.status,
       volume: perfume.componentsItems.reduce((a,b) => a+b.volume,0),

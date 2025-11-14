@@ -1,5 +1,5 @@
 import { Body,Controller,Delete,Get,Param,ParseUUIDPipe,Post,Put,Query,UseGuards } from '@nestjs/common';
-import { ApiOperation,ApiResponse,ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse,ApiOperation,ApiTags } from '@nestjs/swagger';
 import { AddSalaryUserResponse,ChangeRoleUserResponse,CreateUserDto,CreateUserResponse,EditUserResponse,GetAllUsersDto,GetAllUsersResponse,GetSalaryUserResponse,GetSalaryUsersDto,GetSalaryUsersResponse,GetUserResponse,OrderPublisher,RemoveSalaryUserResponse,RemoveUserResponse,UserPublisher } from '@perfume-platform/common';
 import { firstValueFrom } from 'rxjs';
 import { AuthGuard } from '../../modules/auth/auth.guard';
@@ -17,35 +17,35 @@ export class UserController {
     @ApiOperation({
         description: 'Добавить зарплату пользователю',
     })
-    @ApiResponse({
+    @ApiOkResponse({
         type: AddSalaryUserResponse
     })
     addSalaryUser(
         @Body() dto: AdminAddSalaryUserDto,
-        @Param('id', ParseUUIDPipe) id: string
+        @Param('id',ParseUUIDPipe) id: string
     ) {
-        return firstValueFrom(this.userPublisher.addSalaryUser({ ...dto, id }))
+        return firstValueFrom(this.userPublisher.addSalaryUser({ ...dto,id }))
     }
 
     @Post(':id/role')
     @ApiOperation({
         description: 'Изменить роль пользователя',
     })
-    @ApiResponse({
+    @ApiOkResponse({
         type: ChangeRoleUserResponse
     })
     changeRoleUser(
         @Body() dto: AdminChangeRoleUserDto,
-        @Param('id', ParseUUIDPipe) id: string
+        @Param('id',ParseUUIDPipe) id: string
     ) {
-        return firstValueFrom(this.userPublisher.changeRoleUser({ ...dto, id }))
+        return firstValueFrom(this.userPublisher.changeRoleUser({ ...dto,id }))
     }
 
     @Post()
     @ApiOperation({
         description: 'Создать пользователя',
     })
-    @ApiResponse({
+    @ApiOkResponse({
         type: CreateUserResponse
     })
     createUser(
@@ -58,21 +58,21 @@ export class UserController {
     @ApiOperation({
         description: 'Редактировать пользователя',
     })
-    @ApiResponse({
+    @ApiOkResponse({
         type: EditUserResponse
     })
     editUser(
         @Body() dto: AdminEditUserDto,
-        @Param('id', ParseUUIDPipe) id: string
+        @Param('id',ParseUUIDPipe) id: string
     ) {
-        return firstValueFrom(this.userPublisher.editUser({ ...dto, id }))
+        return firstValueFrom(this.userPublisher.editUser({ ...dto,id }))
     }
 
     @Get()
     @ApiOperation({
         description: 'Получить пользователей',
     })
-    @ApiResponse({
+    @ApiOkResponse({
         type: GetAllUsersResponse
     })
     getAll(
@@ -85,21 +85,21 @@ export class UserController {
     @ApiOperation({
         description: 'Получить пользователя с зарплатой',
     })
-    @ApiResponse({
+    @ApiOkResponse({
         type: GetSalaryUserResponse
     })
     getSalaryUser(
         @Query() dto: AdminGetSalaryUserDto,
-        @Param('id', ParseUUIDPipe) id: string
+        @Param('id',ParseUUIDPipe) id: string
     ) {
-        return firstValueFrom(this.userPublisher.getSalaryUser({ id, ...dto }))
+        return firstValueFrom(this.userPublisher.getSalaryUser({ id,...dto }))
     }
 
     @Get('salary')
     @ApiOperation({
         description: 'Получить пользователей с зарплатой',
     })
-    @ApiResponse({
+    @ApiOkResponse({
         type: GetSalaryUsersResponse
     })
     getSalaryUsers(
@@ -112,28 +112,28 @@ export class UserController {
     @ApiOperation({
         description: 'Получить пользователя',
     })
-    @ApiResponse({
+    @ApiOkResponse({
         type: GetUserResponse
     })
     getUser(
-        @Param('id', ParseUUIDPipe) id: string,
+        @Param('id',ParseUUIDPipe) id: string,
         @Query() dto: AdminGetUserDto
     ) {
-        return firstValueFrom(this.userPublisher.getUser({ id, ...dto }))
+        return firstValueFrom(this.userPublisher.getUser({ id,...dto }))
     }
 
     @Delete(':id/salary')
     @ApiOperation({
         description: 'Удалить зарплату пользователя',
     })
-    @ApiResponse({
+    @ApiOkResponse({
         type: RemoveSalaryUserResponse
     })
     removeSalaryUser(
-        @Param('id', ParseUUIDPipe) userId: string,
+        @Param('id',ParseUUIDPipe) userId: string,
         @Body() dto: AdminRemoveSalaryUserDto
     ) {
-        return firstValueFrom(this.userPublisher.removeSalaryUser({ userId, ...dto }))
+        return firstValueFrom(this.userPublisher.removeSalaryUser({ userId,...dto }))
     }
 
 
@@ -141,11 +141,11 @@ export class UserController {
     @ApiOperation({
         description: 'Удалить пользователя',
     })
-    @ApiResponse({
+    @ApiOkResponse({
         type: RemoveUserResponse
     })
     removeUser(
-        @Param('id', ParseUUIDPipe) id: string
+        @Param('id',ParseUUIDPipe) id: string
     ) {
         return firstValueFrom(this.userPublisher.removeUser({ id }))
     }

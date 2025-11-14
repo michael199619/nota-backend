@@ -174,7 +174,8 @@ model Perfume {
   id                String          @id @default(uuid()) @db.Uuid
   authorId          String          @map("author_id") @db.Uuid
   sex               Sex             @default(UNISEX)
-  authorDescription String          @map("author_description") @db.Text
+  name              String          @default("") // изначальное название парфюма от парфюмера
+  authorDescription String          @map("author_description") @db.Text // описание от парфюмера
   status            PerfumeStatus   @default(DRAFT)
   productItems      ProductItem[]
   componentsItems   ComponentItem[]

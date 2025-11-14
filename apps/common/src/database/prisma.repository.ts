@@ -1,5 +1,5 @@
 
-import { PaginationDto, PaginationResponse } from '../utils';
+import { PaginationDto,PaginationResponse } from '../utils';
 import {
   BasePrismaClient,
   BaseTransactionClient,
@@ -11,7 +11,7 @@ import {
 export abstract class PrismaRepository<
   PrismaServiceType extends BasePrismaClient,
   TransactionClient extends BaseTransactionClient,
-  TransactionIsolationLevel extends BaseTransactionIsolationLevel = BaseTransactionIsolationLevel,
+  TransactionIsolationLevel extends BaseTransactionIsolationLevel=BaseTransactionIsolationLevel,
 > {
   constructor(
     protected readonly prisma: PrismaClientWithTransaction<
@@ -26,15 +26,15 @@ export abstract class PrismaRepository<
    */
   protected getContext(
     tx:
-      | TransactionClient
-      | Omit<
+      |TransactionClient
+      |Omit<
         PrismaClientWithTransaction<
           PrismaServiceType,
           TransactionClient,
           TransactionIsolationLevel
         >,
         '$transaction'
-      > = this.prisma,
+      >=this.prisma,
   ) {
     return tx as TransactionClient;
   }
@@ -47,12 +47,12 @@ export abstract class PrismaRepository<
    * @returns результат `cb`
    */
   public async transaction<R>(
-    tx: TransactionClient | undefined,
+    tx: TransactionClient|undefined,
     cb: (tx: TransactionClient) => Promise<R>,
     options?: BaseTransactionOptions<TransactionIsolationLevel>,
   ) {
     if (!tx) {
-      return this.prisma.$transaction<R>(async tx => cb(tx), options);
+      return this.prisma.$transaction<R>(async tx => cb(tx),options);
     }
     return cb(tx);
   }
@@ -61,10 +61,10 @@ export abstract class PrismaRepository<
     skip?: number;
     take?: number;
   } {
-    const page = Math.round(pagination.page);
-    const take = Math.round(pagination.limit);
+    const page=Math.round(pagination.page);
+    const take=Math.round(pagination.limit);
 
-    return { take, skip: (page - 1) * take };
+    return { take,skip: (page-1)*take };
   }
 
   public paginationResponse<T>({
@@ -80,18 +80,19 @@ export abstract class PrismaRepository<
   }): PaginationResponse<T> {
     return {
       data,
-      perPage: take ?? total,
-      pageCount: take ? Math.ceil(total / take) : 1,
+      perPage: take??total,
+      pageCount: take? Math.ceil(total/take):1,
       total,
-      page: page ?? 1,
+      page: page??1,
     };
   }
 
-  public getContains<Values extends object, K extends keyof Values = keyof Values>(key: K, value?: string) {
-    if (value) {
+  public getContains<Values extends object,K extends keyof Values=keyof Values>(key: K,contains?: string) {
+    if (contains) {
       return {
         [key]: {
-          contains: value
+          contains,
+          mode: 'insensitive'
         }
       }
     }
